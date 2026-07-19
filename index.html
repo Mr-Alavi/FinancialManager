@@ -1,20 +1,48 @@
-<div id="app">
-    <!-- بخش اصلی -->
-    <div id="dashboard-page" class="page">
-        <section class="dashboard-card">
-            <h2>موجودی کل</h2>
-            <div id="total-balance" class="balance">۰ تومان</div>
-        </section>
-        <section class="actions">
-            <button class="btn-primary" onclick="showForm()">ثبت تراکنش جدید</button>
-        </section>
-        <div id="recent-transactions"></div>
-    </div>
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T.R.O.R Finance</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div id="app">
+        <!-- داشبورد -->
+        <div id="dashboard-page" class="page">
+            <h1>سلام، Mr. Alavi</h1>
+            <div class="dashboard-card">
+                <h2>موجودی کل</h2>
+                <div id="total-balance" class="balance">۰ تومان</div>
+            </div>
+            <button class="btn-primary" onclick="showForm()">+ ثبت تراکنش</button>
+            <div id="transaction-form" class="glass-card" style="display:none;">
+                <input type="number" id="amount" placeholder="مبلغ (تومان)">
+                <select id="category">
+                    <option value="food">غذا</option>
+                    <option value="car">خودرو</option>
+                    <option value="shopping">خرید</option>
+                </select>
+                <button class="btn-primary" onclick="saveTransaction()">ذخیره</button>
+            </div>
+        </div>
 
-    <!-- ناوبری پایین صفحه (Bottom Navigation) -->
-    <nav class="bottom-nav">
-        <button onclick="switchPage('dashboard')">داشبورد</button>
-        <button onclick="switchPage('vehicle')">خودرو</button>
-        <button onclick="switchPage('settings')">تنظیمات</button>
-    </nav>
-</div>
+        <!-- صفحه خودرو -->
+        <div id="vehicle-page" class="page" style="display:none;">
+            <h2>مدیریت خودرو (تیبا ۱)</h2>
+            <div class="dashboard-card">
+                <p>هزینه کل نگهداری:</p>
+                <div id="vehicle-total" class="balance">۰ تومان</div>
+            </div>
+        </div>
+
+        <!-- ناوبری پایین -->
+        <nav class="bottom-nav">
+            <button onclick="switchPage('dashboard')">داشبورد</button>
+            <button onclick="switchPage('vehicle')">خودرو</button>
+        </nav>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
