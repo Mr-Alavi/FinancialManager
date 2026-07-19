@@ -1,0 +1,50 @@
+
+:root {
+    --bg-dark: #0f172a;
+    --glass-bg: rgba(30, 41, 59, 0.7);
+    --neon-blue: #38bdf8;
+    --text-primary: #f8fafc;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+#app {
+    max-width: 480px;
+    width: 100%;
+}
+
+.dashboard-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 20px;
+    text-align: left;
+}
+
+.balance {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--neon-blue);
+    margin-top: 10px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #38bdf8, #818cf8);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 12px;
+    width: 100%;
+    margin-top: 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
