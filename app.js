@@ -1,25 +1,32 @@
-let db;
-const request = indexedDB.open('TROR_Finance', 1);
-
-request.onupgradeneeded = e => { e.target.result.createObjectStore('transactions', { autoIncrement: true }); };
-request.onsuccess = e => { db = e.target.result; updateUI(); };
-
-function switchPage(p) {
-    document.querySelectorAll('.page').forEach(page => page.style.display = 'none');
-    document.getElementById(p + '-page').style.display = 'block';
-}
-
-function showForm() { document.getElementById('transaction-form').style.display = 'block'; }
+// بودجه‌بندی: ۴۰٪ جاری، ۳۰٪ پس‌انداز، ۳۰٪ خودرو
+const BUDGET_RULES = { current: 0.4, savings: 0.3, car: 0.3 };
 
 function saveTransaction() {
-    const amount = document.getElementById('amount').value;
+    const amount = parseFloat(document.getElementById('amount').value);
     const category = document.getElementById('category').value;
+    
+    // محاسبه تخصیص بودجه برای درآمدهای جدید
+    if(category === 'income') {
+        console.log("تخصیص بودجه:", amount * BUDGET_RULES.savings, "به پس‌انداز");
+    }
+
     const tx = db.transaction('transactions', 'readwrite');
-    tx.objectStore('transactions').add({ amount, category, date: new Date() });
-    tx.oncomplete = () => { alert('ثبت شد'); updateUI(); };
+    tx.objectStore('transactions').add({ amount, category, date: new Date().toISOString() });
+    tx.oncomplete = () => { 
+        alert('تراکنش با موفقیت ثبت شد'); 
+        updateUI(); 
+    };
 }
 
 function updateUI() {
-    // منطق نمایش موجودی از دیتابیس
-    console.log("UI Updated");
+    const txStore = db.transaction('transactions', 'readonly').objectStore('transactions');
+    txStore.getAll().onsuccess = (e) => {
+        const data = e.target.result;
+        // فیلتر کردن هزینه‌های تیبا ۱
+        const carExpenses = data.filter(t => t.category === 'car')
+                                .reduce((sum, t) => sum + parseFloat(t.amount), 0);
+        
+        document.getElementById('vehicle-total').innerText = carExpenses.toLocaleString() + ' تومان';
+        document.getElementById('total-balance').innerText = data.reduce((sum, t) => sum + parseFloat(t.amount), 0).toLocaleString() + ' تومان';
+    };
 }
