@@ -3,58 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مدیریت مالی T . R . O . R</title>
+    <title>Financial Manager</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
-    <meta name="theme-color" content="#000000">
 </head>
 <body>
-    <div id="loader">
-        <div class="spinner"></div>
-    </div>
+    <div id="loader"><div class="spinner"></div></div>
+
+    <main id="app-container">
+        <section id="dashboard" class="page active">
+            <header><h1>داشبورد T . R . O . R</h1></header>
+            <div class="card">
+                <h3>موجودی کل</h3>
+                <h2 id="total-balance">۰ تومان</h2>
+            </div>
+        </section>
+        
+        <section id="transactions" class="page">
+            <div class="card"><h2>مدیریت تراکنش‌ها</h2></div>
+        </section>
+    </main>
 
     <nav class="bottom-nav">
         <button onclick="showPage('dashboard')">داشبورد</button>
         <button onclick="showPage('transactions')">تراکنش</button>
-        <button onclick="showPage('car')">🚗 شاهین</button>
-        <button onclick="showPage('settings')">تنظیمات</button>
     </nav>
 
-    <main id="app-container">
-        <!-- Dashboard Section -->
-        <section id="dashboard" class="page active">
-            <header>
-                <h1>سلام، T . R . O . R</h1>
-                <p>مدیریت هوشمند دارایی‌ها</p>
-            </header>
-            <div class="card main-balance">
-                <h3>موجودی کل</h3>
-                <h2 id="total-balance">۰ تومان</h2>
-            </div>
-            <div class="stats-grid">
-                <div class="card">درآمد: <span id="total-income">۰</span></div>
-                <div class="card">هزینه: <span id="total-expense">۰</span></div>
-            </div>
-        </section>
-
-        <!-- Dynamic Content Sections -->
-        <section id="transactions" class="page"></section>
-        <section id="car" class="page">
-            <div class="card">
-                <h2>🚗 شاهین</h2>
-                <p>تیبا ۱ | مدل ۱۳۹۰ | نقره‌ای</p>
-            </div>
-        </section>
-        <section id="settings" class="page">
-            <div class="card"><h2>تنظیمات</h2></div>
-        </section>
-    </main>
-
     <script src="app.js"></script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js');
-        }
-    </script>
 </body>
-  </html>
+</html>
