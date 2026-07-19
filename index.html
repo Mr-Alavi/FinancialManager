@@ -5,39 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>T.R.O.R Finance</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
 </head>
 <body>
     <div id="app">
-        <!-- داشبورد -->
         <div id="dashboard-page" class="page">
-            <h1>سلام، Mr. Alavi</h1>
+            <h1 style="text-align: left;">T.R.O.R</h1>
             <div class="dashboard-card">
-                <h2>موجودی کل</h2>
+                <p>موجودی کل</p>
                 <div id="total-balance" class="balance">۰ تومان</div>
             </div>
-            <button class="btn-primary" onclick="showForm()">+ ثبت تراکنش</button>
-            <div id="transaction-form" class="glass-card" style="display:none;">
+            
+            <div class="glass-card">
                 <input type="number" id="amount" placeholder="مبلغ (تومان)">
                 <select id="category">
+                    <option value="income">درآمد</option>
                     <option value="food">غذا</option>
-                    <option value="car">خودرو</option>
-                    <option value="shopping">خرید</option>
+                    <option value="car">خودرو (تیبا ۱)</option>
                 </select>
-                <button class="btn-primary" onclick="saveTransaction()">ذخیره</button>
+                <button class="btn-primary" onclick="saveTransaction()">ثبت تراکنش</button>
             </div>
         </div>
 
-        <!-- صفحه خودرو -->
-        <div id="vehicle-page" class="page" style="display:none;">
-            <h2>مدیریت خودرو (تیبا ۱)</h2>
+        <div id="vehicle-page" class="page">
+            <h2 style="text-align: left;">خودرو تیبا ۱</h2>
             <div class="dashboard-card">
-                <p>هزینه کل نگهداری:</p>
+                <p>هزینه کل نگهداری</p>
                 <div id="vehicle-total" class="balance">۰ تومان</div>
             </div>
         </div>
 
-        <!-- ناوبری پایین -->
         <nav class="bottom-nav">
             <button onclick="switchPage('dashboard')">داشبورد</button>
             <button onclick="switchPage('vehicle')">خودرو</button>
