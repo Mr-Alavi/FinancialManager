@@ -1,88 +1,178 @@
-let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+let data = JSON.parse(localStorage.getItem("financialData")) || {
+
+    transactions: [],
+    debts: 0,
+    goals: 0
+
+};
+
 
 
 function save(){
+
     localStorage.setItem(
-        "transactions",
-        JSON.stringify(transactions)
+        "financialData",
+        JSON.stringify(data)
     );
-}
-
-
-function update(){
-
-    let balance = 0;
-    let income = 0;
-    let expense = 0;
-
-
-    transactions.forEach(t => {
-
-        if(t.type === "income"){
-            income += t.amount;
-            balance += t.amount;
-        }
-
-        else{
-            expense += t.amount;
-            balance -= t.amount;
-        }
-
-    });
-
-
-    document.getElementById("balance").innerText =
-    balance.toLocaleString()+" تومان";
-
-
-    document.getElementById("income").innerText =
-    income.toLocaleString()+" تومان";
-
-
-    document.getElementById("expense").innerText =
-    expense.toLocaleString()+" تومان";
 
 }
 
 
 
-document.querySelector(".main-btn")
-.onclick = function(){
+
+function calculate(){
+
+
+let balance = 0;
+let income = 0;
+let expense = 0;
+
+
+
+data.transactions.forEach(item=>{
+
+
+    if(item.type==="income"){
+
+        income += item.amount;
+        balance += item.amount;
+
+    }
+    else{
+
+        expense += item.amount;
+        balance -= item.amount;
+
+    }
+
+
+});
+
+
+
+document.getElementById("balance").innerText =
+balance.toLocaleString()+" تومان";
+
+
+document.getElementById("income").innerText =
+income.toLocaleString()+" تومان";
+
+
+document.getElementById("expense").innerText =
+expense.toLocaleString()+" تومان";
+
+
+document.getElementById("debt").innerText =
+data.debts.toLocaleString()+" تومان";
+
+
+document.getElementById("goal").innerText =
+data.goals.toLocaleString()+" تومان";
+
+
+
+showTransactions();
+
+
+}
+
+
+
+
+
+
+
+function addTransaction(){
 
 
 let type = prompt(
-"نوع تراکنش:\n1 درآمد\n2 خرج"
+"نوع تراکنش:\n1 = درآمد\n2 = هزینه"
 );
+
 
 
 let amount = Number(
-prompt("مبلغ:")
+prompt("مبلغ را وارد کنید")
 );
+
 
 
 if(!amount) return;
 
 
-transactions.push({
 
-type: type === "1" ? "income" : "expense",
+let title = prompt(
+"عنوان:"
+) || "بدون عنوان";
 
-amount: amount,
 
-date: new Date().toLocaleDateString("fa-IR")
+
+
+
+data.transactions.unshift({
+
+type:
+type==="1"
+?
+"income"
+:
+"expense",
+
+
+amount:amount,
+
+
+title:title,
+
+
+date:new Date()
+.toLocaleDateString("fa-IR")
 
 });
 
 
+
 save();
 
-update();
+calculate();
+
 
 
 alert("✅ ثبت شد");
+
 
 }
 
 
 
-update();
+
+
+
+
+function showTransactions(){
+
+
+let box =
+document.getElementById(
+"transactions"
+);
+
+
+
+box.innerHTML="";
+
+
+
+data.transactions
+.slice(0,10)
+.forEach(item=>{
+
+
+
+let div =
+document.createElement("div");
+
+
+
+div.className =
+"transaction "+
