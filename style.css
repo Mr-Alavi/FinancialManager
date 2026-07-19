@@ -1,1 +1,97 @@
-style.css
+* {
+    box-sizing: border-box;
+    font-family: Tahoma, Arial, sans-serif;
+}
+
+body {
+    margin: 0;
+    background: #050505;
+    color: white;
+    min-height: 100vh;
+}
+
+.app {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+header h1 {
+    color: #00aaff;
+    margin-bottom: 8px;
+}
+
+header p {
+    color: #aaa;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.card {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(0,170,255,0.3);
+    border-radius: 20px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 20px rgba(0,170,255,0.15);
+}
+
+.card span {
+    color: #bbb;
+}
+
+.card h2 {
+    margin-top: 15px;
+    color: white;
+    font-size: 20px;
+}
+
+.income {
+    border-color: #00ff88;
+}
+
+.income h2 {
+    color: #00ff88;
+}
+
+.expense {
+    border-color: #ff4455;
+}
+
+.expense h2 {
+    color: #ff4455;
+}
+
+.main-btn {
+    width: 100%;
+    margin-top: 25px;
+    padding: 18px;
+    border: none;
+    border-radius: 20px;
+    background: #008cff;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.main-btn:active {
+    transform: scale(0.97);
+}
+
+
+@media(max-width:400px){
+
+.cards {
+    grid-template-columns:1fr;
+}
+
+  }
