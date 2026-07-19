@@ -1,142 +1,60 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
-
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Financial Manager</title>
-
-<link rel="stylesheet" href="style.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>مدیریت مالی T . R . O . R</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+    <meta name="theme-color" content="#000000">
 </head>
-
-
 <body>
-
-
-<div class="app">
-
-
-<header>
-
-<h1>سلام حسین 👋</h1>
-
-<p>مدیریت هوشمند زندگی و مالی</p>
-
-</header>
-
-
-
-<section class="dashboard">
-
-
-<div class="card main">
-
-<span>💰 موجودی</span>
-
-<h2 id="balance">0 تومان</h2>
-
-</div>
-
-
-
-<div class="card income">
-
-<span>📥 درآمد</span>
-
-<h2 id="income">0 تومان</h2>
-
-</div>
-
-
-
-<div class="card expense">
-
-<span>📤 هزینه</span>
-
-<h2 id="expense">0 تومان</h2>
-
-</div>
-
-
-
-<div class="card">
-
-<span>💳 بدهی</span>
-
-<h2 id="debt">0 تومان</h2>
-
-</div>
-
-
-
-<div class="card">
-
-<span>🎯 هدف‌ها</span>
-
-<h2 id="goal">0 تومان</h2>
-
-</div>
-
-
-</section>
-
-
-
-
-
-<section class="actions">
-
-
-<button onclick="addTransaction()">
-➕ ثبت تراکنش
-</button>
-
-
-<button onclick="showTransactions()">
-📋 تاریخچه
-</button>
-
-
-<button onclick="addDebt()">
-💳 بدهی جدید
-</button>
-
-
-<button onclick="addGoal()">
-🎯 هدف جدید
-</button>
-
-
-</section>
-
-
-
-
-
-<section class="list">
-
-
-<h3>آخرین تراکنش‌ها</h3>
-
-
-<div id="transactions">
-
-</div>
-
-
-</section>
-
-
-
-</div>
-
-
-
-<script src="app.js"></script>
-
-
+    <div id="loader">
+        <div class="spinner"></div>
+    </div>
+
+    <nav class="bottom-nav">
+        <button onclick="showPage('dashboard')">داشبورد</button>
+        <button onclick="showPage('transactions')">تراکنش</button>
+        <button onclick="showPage('car')">🚗 شاهین</button>
+        <button onclick="showPage('settings')">تنظیمات</button>
+    </nav>
+
+    <main id="app-container">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="page active">
+            <header>
+                <h1>سلام، T . R . O . R</h1>
+                <p>مدیریت هوشمند دارایی‌ها</p>
+            </header>
+            <div class="card main-balance">
+                <h3>موجودی کل</h3>
+                <h2 id="total-balance">۰ تومان</h2>
+            </div>
+            <div class="stats-grid">
+                <div class="card">درآمد: <span id="total-income">۰</span></div>
+                <div class="card">هزینه: <span id="total-expense">۰</span></div>
+            </div>
+        </section>
+
+        <!-- Dynamic Content Sections -->
+        <section id="transactions" class="page"></section>
+        <section id="car" class="page">
+            <div class="card">
+                <h2>🚗 شاهین</h2>
+                <p>تیبا ۱ | مدل ۱۳۹۰ | نقره‌ای</p>
+            </div>
+        </section>
+        <section id="settings" class="page">
+            <div class="card"><h2>تنظیمات</h2></div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js');
+        }
+    </script>
 </body>
-
-</html>
+  </html>
