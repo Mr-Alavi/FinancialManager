@@ -1,258 +1,46 @@
-*{
-    box-sizing:border-box;
-    font-family:Tahoma, Arial, sans-serif;
+:root {
+    --bg-color: #050505;
+    --card-bg: rgba(20, 20, 20, 0.7);
+    --neon-blue: #00f2ff;
+    --text-color: #ffffff;
+    --glass: backdrop-filter: blur(15px);
 }
 
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
 
-body{
+body { background-color: var(--bg-color); color: var(--text-color); overflow-x: hidden; }
 
-    margin:0;
-    background:#050505;
-    color:white;
-
+.card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 20px;
+    margin: 10px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
 }
 
-
-.app{
-
-    max-width:520px;
-    margin:auto;
-    padding:20px;
-
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    padding: 15px;
+    background: rgba(0,0,0,0.9);
+    border-top: 1px solid var(--neon-blue);
 }
 
+button { background: none; border: none; color: white; cursor: pointer; }
 
+.page { display: none; padding-bottom: 80px; }
+.page.active { display: block; animation: fadeIn 0.5s; }
 
-header{
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    text-align:center;
-    margin-bottom:25px;
-
+#loader { 
+    position: fixed; width: 100%; height: 100%; background: #000;
+    display: flex; justify-content: center; align-items: center; z-index: 1000;
 }
-
-
-header h1{
-
-    color:#00aaff;
-    font-size:28px;
-
-}
-
-
-header p{
-
-    color:#aaa;
-
-}
-
-
-
-
-
-.dashboard{
-
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:15px;
-
-}
-
-
-
-.card{
-
-    background:
-    linear-gradient(
-    145deg,
-    rgba(255,255,255,.12),
-    rgba(255,255,255,.04)
-    );
-
-
-    border:1px solid rgba(0,170,255,.3);
-
-    border-radius:22px;
-
-    padding:20px;
-
-    box-shadow:
-    0 0 25px rgba(0,170,255,.12);
-
-
-    backdrop-filter:blur(12px);
-
-
-}
-
-
-
-.card span{
-
-    color:#bbb;
-
-}
-
-
-.card h2{
-
-    margin-top:15px;
-
-    font-size:20px;
-
-}
-
-
-
-.main{
-
-    grid-column:span 2;
-
-}
-
-
-
-.main h2{
-
-    color:#00aaff;
-
-    font-size:30px;
-
-}
-
-
-
-.income{
-
-    border-color:#00ff88;
-
-}
-
-
-.income h2{
-
-    color:#00ff88;
-
-}
-
-
-
-.expense{
-
-    border-color:#ff4455;
-
-}
-
-
-.expense h2{
-
-    color:#ff4455;
-
-}
-
-
-
-
-
-.actions{
-
-    margin-top:25px;
-
-    display:grid;
-
-    gap:12px;
-
-}
-
-
-
-
-button{
-
-    padding:16px;
-
-    border:none;
-
-    border-radius:18px;
-
-    background:#008cff;
-
-    color:white;
-
-    font-size:17px;
-
-    cursor:pointer;
-
-}
-
-
-
-button:active{
-
-    transform:scale(.97);
-
-}
-
-
-
-
-
-.list{
-
-    margin-top:30px;
-
-}
-
-
-
-.transaction{
-
-    background:#111;
-
-    padding:15px;
-
-    border-radius:15px;
-
-    margin-top:10px;
-
-    border-right:4px solid #008cff;
-
-}
-
-
-
-.transaction.in{
-
-    border-color:#00ff88;
-
-}
-
-
-.transaction.out{
-
-    border-color:#ff4455;
-
-}
-
-
-
-
-
-
-@media(max-width:400px){
-
-
-.dashboard{
-
-grid-template-columns:1fr;
-
-}
-
-
-.main{
-
-grid-column:auto;
-
-}
-
-
-    }
+.spinner { border: 4px solid var(--neon-blue); width: 40px; height: 40px; border-radius: 50%; border-top: 4px solid transparent; animation: spin 1s linear infinite; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
