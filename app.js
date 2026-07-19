@@ -176,3 +176,102 @@ document.createElement("div");
 
 div.className =
 "transaction "+
+(item.type==="income"?"in":"out");
+
+
+
+div.innerHTML = `
+
+<b>${item.title}</b>
+
+<br>
+
+${item.type==="income"?"📥":"📤"}
+
+${item.amount.toLocaleString()}
+
+تومان
+
+<br>
+
+<small>${item.date}</small>
+
+`;
+
+
+
+box.appendChild(div);
+
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+function addDebt(){
+
+
+let amount =
+Number(
+prompt("مبلغ بدهی:")
+);
+
+
+
+if(!amount) return;
+
+
+data.debts += amount;
+
+
+save();
+
+calculate();
+
+
+}
+
+
+
+
+
+
+
+
+function addGoal(){
+
+
+let amount =
+Number(
+prompt("مبلغ هدف:")
+);
+
+
+
+if(!amount) return;
+
+
+data.goals += amount;
+
+
+save();
+
+calculate();
+
+
+
+}
+
+
+
+
+
+
+calculate();
