@@ -1,9 +1,10 @@
-:root { --bg-dark: #0f172a; --glass-bg: rgba(30, 41, 59, 0.7); --neon-blue: #38bdf8; }
-body { background-color: var(--bg-dark); color: white; font-family: sans-serif; margin: 0; padding: 20px; }
+:root { --bg-dark: #0f172a; --glass-bg: rgba(255, 255, 255, 0.1); --neon-blue: #38bdf8; }
+body { background-color: var(--bg-dark); color: white; font-family: sans-serif; margin: 0; padding: 20px; direction: ltr; text-align: left; }
 .page { display: none; }
 #dashboard-page { display: block; }
-.dashboard-card, .glass-card { background: var(--glass-bg); backdrop-filter: blur(10px); padding: 20px; border-radius: 20px; margin-bottom: 20px; text-align: left; }
-.balance { color: var(--neon-blue); font-size: 24px; font-weight: bold; }
-.btn-primary { background: linear-gradient(135deg, #38bdf8, #818cf8); border: none; padding: 15px; width: 100%; border-radius: 12px; color: white; margin-bottom: 10px; }
-.bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #1e293b; display: flex; justify-content: space-around; padding: 15px 0; }
-select, input { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: none; }
+.dashboard-card, .glass-card { background: var(--glass-bg); backdrop-filter: blur(15px); padding: 20px; border-radius: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
+.balance { color: var(--neon-blue); font-size: 28px; font-weight: bold; margin-top: 10px; }
+.btn-primary { background: var(--neon-blue); border: none; padding: 15px; width: 100%; border-radius: 12px; color: #000; font-weight: bold; cursor: pointer; }
+input, select { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: none; background: rgba(0,0,0,0.2); color: white; box-sizing: border-box; }
+.bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(30, 41, 59, 0.9); backdrop-filter: blur(20px); display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid rgba(255,255,255,0.1); }
+button { background: none; border: none; color: white; cursor: pointer; }
