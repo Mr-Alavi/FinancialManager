@@ -1,33 +1,20 @@
-<!DOCTYPE html>
-<html lang="fa" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مدیریت مالی شخصی T.R.O.R</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0f172a">
-</head>
-<body>
-    <div id="app">
-        <header>
-            <div class="user-profile">
-                <h1>سلام، Mr. Alavi</h1>
-                <p>طراح و توسعه‌دهنده وب</p>
-            </div>
-        </header>
-        
-        <main id="main-content">
-            <section class="dashboard-card">
-                <h2>موجودی کل</h2>
-                <div class="balance">۲۸۵,۶۷۰,۰۰۰ تومان</div>
-            </section>
-            
-            <section class="actions">
-                <button class="btn-primary">ثبت تراکنش</button>
-            </section>
-        </main>
+<div id="app">
+    <!-- بخش اصلی -->
+    <div id="dashboard-page" class="page">
+        <section class="dashboard-card">
+            <h2>موجودی کل</h2>
+            <div id="total-balance" class="balance">۰ تومان</div>
+        </section>
+        <section class="actions">
+            <button class="btn-primary" onclick="showForm()">ثبت تراکنش جدید</button>
+        </section>
+        <div id="recent-transactions"></div>
     </div>
-    <script src="app.js"></script>
-</body>
-</html>
+
+    <!-- ناوبری پایین صفحه (Bottom Navigation) -->
+    <nav class="bottom-nav">
+        <button onclick="switchPage('dashboard')">داشبورد</button>
+        <button onclick="switchPage('vehicle')">خودرو</button>
+        <button onclick="switchPage('settings')">تنظیمات</button>
+    </nav>
+</div>
