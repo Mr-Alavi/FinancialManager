@@ -1,4 +1,4 @@
-/* تنظیمات پایه - همه چیز چپ‌چین مطلق */
+/* تنظیمات پایه - چپ‌چین و جهت LTR مطلق */
 * {
     margin: 0;
     padding: 0;
@@ -27,7 +27,7 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 9999;
-    animation: neonPurpleFade 4s ease forwards;
+    animation: neonPurpleFade 1s ease forwards;
     transition: opacity 1s ease-out;
 }
 
@@ -61,7 +61,7 @@ body {
     font-weight: normal;
 }
 
-/* افکت شیشه‌ای نئونی */
+/* استایل شیشه‌ای نئونی */
 .glass-card {
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(10px);
@@ -140,9 +140,10 @@ header h1 {
 .special-btn {
     grid-column: span 2;
     border-color: #00e6ff;
+    background: rgba(0, 230, 255, 0.08);
 }
 
-/* استایل فرم‌ها و نمای داخلی بخش‌ها */
+/* فرم‌ها و نمای داخلی بخش‌ها */
 .section-header {
     display: flex;
     flex-direction: column;
