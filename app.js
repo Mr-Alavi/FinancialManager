@@ -1,6 +1,6 @@
 /**
  * TROR Personal Financial Operating System - Enterprise Core Architecture
- * Fully localized, secure, and production-ready version for Mr. Alavi.
+ * Fully localized, secure, and production-ready version for Mr Alavi.
  */
 
 class DatabaseManager {
@@ -305,7 +305,7 @@ class FinancialOS {
             this.isLocked = false;
             this.checkSecurityLock();
         } else {
-            alert('رمز ورود نامعتبر است.');
+            alert('پین امنیتی وارد شده اشتباه است.');
         }
     }
 
@@ -430,7 +430,7 @@ class FinancialOS {
                 <div class="glass-card">
                     <h3 style="color: var(--neon-purple); margin-bottom: 16px;"><i class="fa-solid fa-car"></i> وضعیت خودروی Shahin</h3>
                     <div style="background: rgba(0,230,255,0.06); border: 1px solid var(--neon-blue); padding: 16px; border-radius: 12px; color: var(--neon-blue); font-weight: 500; margin-bottom: 16px;">
-                        🚗 تیبا 1 (کارکرد: ${vehicleStats.mileage.toLocaleString()} کیلومتر) آماده پایش و ثبت هزینه‌هاست.
+                        🚗 Tiba 1 (کارکرد: ${vehicleStats.mileage.toLocaleString()} کیلومتر) آماده پایش و ثبت هزینه‌هاست.
                     </div>
                     <button class="glass-btn w-100" onclick="app.navigateTo('shahin')" style="justify-content:center;"><i class="fa-solid fa-car"></i> مدیریت Shahin</button>
                 </div>
@@ -502,7 +502,7 @@ class FinancialOS {
             <div class="glass-card" style="margin-bottom: 20px; display:flex; justify-content:space-between; align-items:center;">
                 <div>
                     <h3 style="color: var(--neon-blue);">مدیریت خودروی Shahin (مدل Tiba 1)</h3>
-                    <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 4px;">کارکرد: ${vStats.mileage.toLocaleString()} کیلومتر • سوخت: ${vStats.fuel} • هزينه هر کیلومتر: ${vStats.costPerKm} تومان</p>
+                    <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 4px;">کارکرد: ${vStats.mileage.toLocaleString()} کیلومتر • سوخت: ${vStats.fuel} • هزینه هر کیلومتر: ${vStats.costPerKm} تومان</p>
                 </div>
                 <button class="glass-btn" onclick="app.openAddVehicleLog()"><i class="fa-solid fa-wrench"></i> ثبت هزینه سرویس/تعمیر</button>
             </div>
@@ -561,7 +561,7 @@ class FinancialOS {
                 </div>
                 <div id="ai-chat-messages" class="ai-messages">
                     <div class="ai-message assistant">
-                        درود Mr. Alavi. من دستیار هوشمند Hop AI هستم. پلتفرم مالی شما آماده است. چه سوال یا دستوری دارید؟
+                        درود Mr Alavi. من دستیار هوشمند Hop AI هستم. پلتفرم مالی شما آماده است. چه سوال یا دستوری دارید؟
                     </div>
                 </div>
                 <div class="ai-input-bar">
@@ -635,22 +635,67 @@ class FinancialOS {
         `; 
     }
 
-    viewSettings() { 
+    async viewSettings() {
+        const settingsList = await this.db.getAll('settings');
+        const currentSetting = (settingsList && settingsList.length > 0) ? settingsList[0] : { theme: 'luxury-dark', language: 'fa', currency: 'تومان' };
         return `
             <div class="glass-card" style="margin-bottom: 20px;">
                 <h3 style="color: var(--neon-blue); margin-bottom: 15px;">تنظیمات سیستم و امنیت محلی</h3>
+                <form onsubmit="app.saveAppSettings(event)" class="form-group" style="max-width:400px; display:flex; flex-direction:column; gap:12px;">
+                    <div>
+                        <label style="display:block; margin-bottom:6px; color:var(--text-muted);">قالب ظاهری (Theme)</label>
+                        <select id="setting-theme" style="width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff;">
+                            <option value="luxury-dark" ${currentSetting.theme === 'luxury-dark' ? 'selected' : ''}>حالت تاریک لوکس (Luxury Dark)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display:block; margin-bottom:6px; color:var(--text-muted);">زبان سیستم (Language)</label>
+                        <select id="setting-lang" style="width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff;">
+                            <option value="fa" ${currentSetting.language === 'fa' ? 'selected' : ''}>فارسی (Persian)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display:block; margin-bottom:6px; color:var(--text-muted);">واحد پول (Currency)</label>
+                        <select id="setting-currency" style="width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff;">
+                            <option value="تومان" ${currentSetting.currency === 'تومان' ? 'selected' : ''}>تومان (Toman)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="glass-btn" style="margin-top: 10px; justify-content:center;"><i class="fa-solid fa-floppy-disk"></i> ذخیره تنظیمات عمومی</button>
+                </form>
+            </div>
+            <div class="glass-card" style="margin-bottom: 20px;">
+                <h3 style="color: var(--neon-blue); margin-bottom: 15px;">امنیت و پین سیستم</h3>
                 <form onsubmit="app.updatePin(event)" class="form-group" style="max-width:350px;">
-                    <label>تغییر رمز PIN امنیتی</label>
-                    <input type="password" id="new-pin-val" placeholder="رمز جدید حداقل 4 رقمی" required>
+                    <label style="display:block; margin-bottom:6px; color:var(--text-muted);">تغییر رمز PIN امنیتی</label>
+                    <input type="password" id="new-pin-val" placeholder="رمز جدید حداقل 4 رقمی" required style="width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff;">
                     <button type="submit" class="glass-btn" style="margin-top: 10px; justify-content:center;"><i class="fa-solid fa-key"></i> ذخیره رمز جدید</button>
                 </form>
             </div>
             <div class="glass-card" style="border-color: rgba(255,77,77,0.4);">
-                <h3 style="color: var(--danger); margin-bottom: 10px;">مدیریت داده‌های تستی TROR</h3>
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px;">بازنشانی داده‌ها فقط اطلاعات TROR را پاکسازی کرده و پایگاه داده را به حالت اولیه خالی برمی‌گرداند.</p>
-                <button class="glass-btn" style="background: rgba(255,77,77,0.2); border-color: var(--danger); color: #fff;" onclick="app.resetDataSystem()"><i class="fa-solid fa-triangle-exclamation"></i> بازنشانی داده‌های تست TROR</button>
+                <h3 style="color: var(--danger); margin-bottom: 10px;">مدیریت داده‌های TROR</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px;">بازنشانی کامل داده‌های برنامه باعث پاکسازی اطلاعات TROR و بازگشت به حالت اولیه می‌شود.</p>
+                <button class="glass-btn" style="background: rgba(255,77,77,0.2); border-color: var(--danger); color: #fff;" onclick="app.resetDataSystem()"><i class="fa-solid fa-triangle-exclamation"></i> بازنشانی کامل داده‌های برنامه</button>
             </div>
         `; 
+    }
+
+    async saveAppSettings(e) {
+        if (e) e.preventDefault();
+        const theme = document.getElementById('setting-theme')?.value || 'luxury-dark';
+        const language = document.getElementById('setting-lang')?.value || 'fa';
+        const currency = document.getElementById('setting-currency')?.value || 'تومان';
+        const settingsList = await this.db.getAll('settings');
+        let settingRecord = (settingsList && settingsList.length > 0) ? settingsList[0] : { id: 'set_1', pin: '1234' };
+        settingRecord.theme = theme;
+        settingRecord.language = language;
+        settingRecord.currency = currency;
+        if (settingsList && settingsList.length > 0) {
+            await this.db.update('settings', settingRecord);
+        } else {
+            await this.db.add('settings', settingRecord);
+        }
+        alert('تنظیمات با موفقیت ذخیره شد.');
+        this.navigateTo('settings');
     }
 
     async updatePin(e) {
@@ -665,37 +710,28 @@ class FinancialOS {
             settingsList[0].pin = newPin;
             await this.db.update('settings', settingsList[0]);
         } else {
-            await this.db.add('settings', { id: 'set_1', pin: newPin, currency: 'تومان' });
+            await this.db.add('settings', { id: 'set_1', pin: newPin, currency: 'تومان', language: 'fa', theme: 'luxury-dark' });
         }
         alert('رمز عبور جدید با موفقیت ذخیره شد و در ورودهای بعدی اعمال خواهد شد.');
         document.getElementById('new-pin-val').value = '';
     }
 
     async resetDataSystem() {
-        if (confirm('آیا از بازنشانی و پاکسازی کامل داده‌های تستی TROR اطمینان دارید؟ تمامی تراکنش‌ها، صندوق‌ها و سوابق حذف خواهند شد.')) {
-            if (this.db.useLocalStorageFallback) {
-                const raw = JSON.parse(localStorage.getItem(this.db.fallbackKey)) || {};
-                raw.transactions = [];
-                raw.accounts = [];
-                raw.budgets = [];
-                raw.savings = [];
-                raw.vehicleLogs = [];
-                raw.aiHistory = [];
-                localStorage.setItem(this.db.fallbackKey, JSON.stringify(raw));
-            } else {
-                const stores = ['transactions', 'accounts', 'budgets', 'savings', 'vehicleLogs', 'aiHistory'];
-                for (const storeName of stores) {
-                    await new Promise((resolve) => {
-                        const transaction = this.db.db.transaction([storeName], 'readwrite');
-                        const store = transaction.objectStore(storeName);
-                        const req = store.clear();
-                        req.onsuccess = () => resolve(true);
-                        req.onerror = () => resolve(false);
-                    });
+        if (confirm('آیا از بازنشانی کامل داده‌های برنامه TROR اطمینان دارید؟ تمام داده‌ها پاکسازی شده و برنامه به حالت اولیه بازمی‌گردد.')) {
+            if (window.indexedDB) {
+                indexedDB.deleteDatabase(this.db.dbName);
+            }
+            localStorage.removeItem(this.db.fallbackKey);
+            localStorage.clear();
+            sessionStorage.clear();
+            if (window.caches) {
+                const keys = await caches.keys();
+                for (const key of keys) {
+                    await caches.delete(key);
                 }
             }
-            alert('داده‌های تست TROR با موفقیت بازنشانی و پاکسازی شدند.');
-            this.navigateTo('dashboard');
+            alert('داده‌های برنامه با موفقیت بازنشانی شدند.');
+            location.reload();
         }
     }
 
