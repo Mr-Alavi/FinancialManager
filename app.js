@@ -1,6 +1,6 @@
 /**
  * TROR Personal Financial Operating System - Enterprise Core Architecture
- * Fully connected commercial version with IndexedDB, full CRUD, Hop AI, and Saipa Tiba 1 telemetry.
+ * Fully localized, secure, and production-ready version for Mr. Alavi.
  */
 
 class DatabaseManager {
@@ -49,26 +49,12 @@ class DatabaseManager {
     initLocalStorageDefault() {
         if (!localStorage.getItem(this.fallbackKey)) {
             const initial = {
-                transactions: [
-                    { id: 't_1', type: 'هزینه', category: 'خوراک', amount: 1000000000, desc: 'خرید کلیه اقلام خوراکی', date: '1405/04/29', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), version: 1, isDeleted: false, syncStatus: 'synced', history: [] },
-                    { id: 't_2', type: 'درآمد', category: 'کار', amount: 4100000, desc: 'مجموع درآمدهای مسافرکشی و خدمات', date: '1405/04/29', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), version: 1, isDeleted: false, syncStatus: 'synced', history: [] },
-                    { id: 't_3', type: 'هزینه', category: 'تعمیرات تیبا', altAmount: 50000, desc: 'سرویس جزئی قطعات', date: '1405/04/29', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), version: 1, isDeleted: false, syncStatus: 'synced', history: [] }
-                ],
-                accounts: [
-                    { id: 'acc_1', name: 'کیف پول نقدی', type: 'Cash', balance: 500000, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), version: 1, isDeleted: false, syncStatus: 'synced', history: [] },
-                    { id: 'acc_2', name: 'حساب بانکی اصلی', type: 'Bank', balance: 3600000, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), version: 1, isDeleted: false, syncStatus: 'synced', history: [] }
-                ],
-                savings: [
-                    { id: 'sav_1', name: 'صندوق بیبی', target: 10000000, current: 0, deadline: '1405/12/29', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), version: 1, isDeleted: false, syncStatus: 'synced', history: [] },
-                    { id: 'sav_2', name: 'صندوق شاهین', target: 40000000, current: 0, deadline: '1405/12/29', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), version: 1, isDeleted: false, syncStatus: 'synced', history: [] },
-                    { id: 'sav_3', name: 'روغن‌سوزی تیبا', target: 40000000, current: 4580005, deadline: '1405/12/29', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), version: 1, isDeleted: false, syncStatus: 'synced', history: [] }
-                ],
-                budgets: [
-                    { id: 'b_1', daily: 200000, cycleDays: 7, foodBudget: 410000, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), version: 1, isDeleted: false, syncStatus: 'synced', history: [] }
-                ],
-                vehicleLogs: [
-                    { id: 'vl_1', type: 'تعمیرات موتور', amount: 1200000, desc: 'بررسی سلامت موتور و تعویض پدها', mileage: 406922, date: '1405/04/30', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), version: 1, isDeleted: false, syncStatus: 'synced', history: [] }
-                ],
+                transactions: [],
+                accounts: [],
+                savings: [],
+                budgets: [],
+                vehicleLogs: [],
+                aiHistory: [],
                 settings: [
                     { id: 'set_1', pin: '1234', currency: 'تومان', language: 'fa', theme: 'luxury-dark', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), version: 1, isDeleted: false, syncStatus: 'synced', history: [] }
                 ]
@@ -78,15 +64,9 @@ class DatabaseManager {
     }
 
     async seedInitialDataIfNeeded() {
-        const txs = await this.getAll('transactions');
-        if (txs.length === 0) {
-            await this.initLocalStorageDefault();
-            const raw = JSON.parse(localStorage.getItem(this.fallbackKey));
-            for (const store of Object.keys(raw)) {
-                for (const item of raw[store]) {
-                    await this.add(store, item);
-                }
-            }
+        const settings = await this.getAll('settings');
+        if (settings.length === 0) {
+            await this.add('settings', { id: 'set_1', pin: '1234', currency: 'تومان', language: 'fa', theme: 'luxury-dark' });
         }
     }
 
@@ -248,10 +228,10 @@ class FinancialEngine {
 
 class VehicleEngine {
     constructor() {
-        this.model = 'تیبا ۱';
+        this.model = 'Tiba 1';
         this.year = '1391';
         this.mileage = 406922;
-        this.fuel = 'دوگانه سوز CNG/Petrol';
+        this.fuel = 'CNG/Petrol';
     }
 
     calculateVehicleStats(vehicleLogs) {
@@ -275,10 +255,13 @@ class AIEngine {
         
         let advice = [];
         if (totalExp > totalInc) {
-            advice.push("⚠️ هشدار هوشمند Hop AI: میزان هزینه‌های ثبت‌شده فراتر از کل درآمد است. بهینه‌سازی دسته‌های خوراک و هزینه‌های متفرقه الزامی است.");
+            advice.push("⚠️ هشدار هوشمند Hop AI: میزان هزینه‌های ثبت‌شده فراتر از کل درآمد است. انضباط مالی و مدیریت هزینه‌ها توصیه می‌شود.");
+        } else if (transactions.length === 0) {
+            advice.push("🤖 سیستم Hop AI آماده است. لطفاً تراکنش‌ها و اهداف پس‌انداز خود را وارد کنید تا تحلیل‌های دقیق مالی ارائه دهم.");
+        } else {
+            advice.push("✨ Hop AI: روند مالی شما تحت کنترل است. به ثبت دقیق تراکنش‌ها ادامه دهید.");
         }
-        advice.push("🚗 صندوق روغن‌سوزی تیبا با مبلغ هدف ۴۰,۰۰۰,۰۰۰ تومان نیاز به پس‌انداز مستمر روزانه دارد تا مهلت مقرر پوشش داده شود.");
-        advice.push("💡 پیشنهاد مهندسی: عملکرد ناوگان تیبا ۱ (کارکرد ۴۰۶,۹۲۲ کیلومتر) پایدار است اما رصد هزینه‌های سوخت و تعمیرات دوره‌ای توصیه می‌شود.");
+        advice.push("🚗 وضعیت خودروی Shahin (مدل Tiba 1 با کارکرد ۴۰۶,۹۲۲ کیلومتر) پایدار است. پایش هزینه‌های سوخت و سرویس‌های دوره‌ای فراموش نشود.");
         
         return advice.join('\n\n');
     }
@@ -303,7 +286,7 @@ class FinancialOS {
         }, 2600);
     }
 
-    checkSecurityLock() {
+    async checkSecurityLock() {
         const lockScreen = document.getElementById('security-lock-screen');
         if (this.isLocked) {
             lockScreen?.classList.remove('hidden');
@@ -314,19 +297,21 @@ class FinancialOS {
         }
     }
 
-    verifyPin() {
+    async verifyPin() {
         const pinInput = document.getElementById('unlock-pin');
-        if (pinInput && pinInput.value === '1234') {
+        const settingsList = await this.db.getAll('settings');
+        const activePin = (settingsList && settingsList.length > 0 && settingsList[0].pin) ? settingsList[0].pin : '1234';
+        if (pinInput && pinInput.value === activePin) {
             this.isLocked = false;
             this.checkSecurityLock();
         } else {
-            alert('رمز ورود نامعتبر است. (پیش‌فرض سیستم: 1234)');
+            alert('رمز ورود نامعتبر است.');
         }
     }
 
     initPWA() {
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error:', err));
+            navigator.serviceWorker.register('sw.js').catch(err => console.log('خطای سرویس ورکر:', err));
         }
     }
 
@@ -337,25 +322,25 @@ class FinancialOS {
         });
 
         const titleMap = {
-            dashboard: 'Dashboard Command Center',
-            transactions: 'Professional Transaction Management',
-            budget: 'Intelligent Budget Control',
-            analysis: 'Advanced Financial Analytics',
-            savings: 'Savings Vault & Goals',
-            reports: 'Reports & Data Export',
-            goals: 'Financial Goals Tracker',
-            accounts: 'Accounts & Wallets',
-            shahin: 'Shahin Vehicle Manager (Tiba 1 - 406,922 km)',
-            'ai-assistant': 'Hop AI Financial Advisor',
-            settings: 'System Settings & Security'
+            dashboard: 'نمای کلی داشبورد',
+            transactions: 'مدیریت تراکنش‌ها',
+            budget: 'کنترل بودجه',
+            analysis: 'تحلیل و آمار مالی',
+            savings: 'صندوق پس‌انداز',
+            reports: 'گزارش‌ها و خروجی',
+            goals: 'اهداف مالی',
+            accounts: 'حساب‌ها و کیف پول‌ها',
+            shahin: 'مدیریت خودروی Shahin (Tiba 1)',
+            'ai-assistant': 'مشاور هوشمند Hop AI',
+            settings: 'تنظیمات سیستم'
         };
 
-        document.getElementById('current-view-title').innerText = titleMap[viewId] || 'Operating System';
+        document.getElementById('current-view-title').innerText = titleMap[viewId] || 'سیستم عامل';
 
         const container = document.getElementById('view-container');
         if (!container) return;
 
-        container.innerHTML = `<div class="glass-card" style="padding: 40px; text-align: left; color: var(--text-muted);">Loading high-performance enterprise module...</div>`;
+        container.innerHTML = `<div class="glass-card" style="padding: 40px; text-align: left; color: var(--text-muted);">در حال بارگذاری ماژول...</div>`;
 
         setTimeout(async () => {
             container.innerHTML = await this.renderModule(viewId);
@@ -395,7 +380,7 @@ class FinancialOS {
             case 'settings':
                 return this.viewSettings();
             default:
-                return `<div class="glass-card"><h3>Enterprise Module Active</h3></div>`;
+                return `<div class="glass-card"><h3>ماژول فعال است</h3></div>`;
         }
     }
 
@@ -403,7 +388,7 @@ class FinancialOS {
         return `
             <div class="metrics-grid">
                 <div class="glass-card metric-card">
-                    <h4>خالص دارایی (Net Worth)</h4>
+                    <h4>خالص دارایی</h4>
                     <div class="value" style="color: ${metrics.netWorth >= 0 ? 'var(--success)' : 'var(--danger)'};">${metrics.netWorth.toLocaleString()} تومان</div>
                     <i class="fa-solid fa-wallet"></i>
                 </div>
@@ -426,6 +411,7 @@ class FinancialOS {
             <div class="dashboard-grid">
                 <div class="glass-card">
                     <h3 style="color: var(--neon-blue); margin-bottom: 16px;"><i class="fa-solid fa-list-check"></i> آخرین تراکنش‌های سیستم</h3>
+                    ${transactions.length === 0 ? '<p style="color: var(--text-muted); font-size: 0.9rem;">هیچ تراکنشی ثبت نشده است.</p>' : `
                     <table class="data-table">
                         <thead><tr><th>نوع</th><th>دسته</th><th>مبلغ (تومان)</th><th>توضیحات</th><th>تاریخ</th></tr></thead>
                         <tbody>
@@ -439,17 +425,14 @@ class FinancialOS {
                                 </tr>
                             `).join('')}
                         </tbody>
-                    </table>
+                    </table>`}
                 </div>
                 <div class="glass-card">
-                    <h3 style="color: var(--neon-purple); margin-bottom: 16px;"><i class="fa-solid fa-triangle-exclamation"></i> هشدارها و وضعیت خودرو</h3>
-                    <div style="background: rgba(255,77,77,0.1); border: 1px solid var(--danger); padding: 16px; border-radius: 12px; color: var(--danger); font-weight: 600; margin-bottom: 16px;">
-                        ⚠️ هزینه کل فراتر از سقف درآمد است. توازن نقدی نیازمند انضباط است.
-                    </div>
+                    <h3 style="color: var(--neon-purple); margin-bottom: 16px;"><i class="fa-solid fa-car"></i> وضعیت خودروی Shahin</h3>
                     <div style="background: rgba(0,230,255,0.06); border: 1px solid var(--neon-blue); padding: 16px; border-radius: 12px; color: var(--neon-blue); font-weight: 500; margin-bottom: 16px;">
-                        🚗 تیبا ۱ (کارکرد: ${vehicleStats.mileage.toLocaleString()} کیلومتر) آماده بررسی پلتفرم تعمیرات است.
+                        🚗 تیبا 1 (کارکرد: ${vehicleStats.mileage.toLocaleString()} کیلومتر) آماده پایش و ثبت هزینه‌هاست.
                     </div>
-                    <button class="glass-btn w-100" onclick="app.navigateTo('shahin')" style="justify-content:center;"><i class="fa-solid fa-car"></i> مدیریت تیبا ۱</button>
+                    <button class="glass-btn w-100" onclick="app.navigateTo('shahin')" style="justify-content:center;"><i class="fa-solid fa-car"></i> مدیریت Shahin</button>
                 </div>
             </div>
         `;
@@ -458,10 +441,11 @@ class FinancialOS {
     viewTransactions(transactions) {
         return `
             <div class="glass-card" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-                <h3>مدیریت حرفه‌ای تراکنش‌ها</h3>
-                <button class="glass-btn" onclick="app.openQuickAdd()"><i class="fa-solid fa-plus"></i> ثبت تراکنش جدید</button>
+                <h3>مدیریت تراکنش‌ها</h3>
+                <button class="glass-btn" onclick="app.openQuickAdd()"><i class="fa-solid fa-plus"></i> تراکنش جدید</button>
             </div>
             <div class="glass-card">
+                ${transactions.length === 0 ? '<p style="color: var(--text-muted);">هیچ تراکنشی یافت نشد. از دکمه بالا برای ثبت تراکنش جدید استفاده کنید.</p>' : `
                 <table class="data-table">
                     <thead><tr><th>نوع</th><th>دسته‌بندی</th><th>مبلغ (تومان)</th><th>توضیحات</th><th>تاریخ</th><th>عملیات</th></tr></thead>
                     <tbody>
@@ -479,7 +463,7 @@ class FinancialOS {
                             </tr>
                         `).join('')}
                     </tbody>
-                </table>
+                </table>`}
             </div>
         `;
     }
@@ -487,9 +471,10 @@ class FinancialOS {
     viewSavings(savings) {
         return `
             <div class="glass-card" style="margin-bottom: 20px; display:flex; justify-content:space-between; align-items:center;">
-                <h3>صندوق‌ها و اهداف پس‌انداز</h3>
+                <h3>صندوق پس‌انداز و اهداف</h3>
                 <button class="glass-btn" onclick="app.openAddSavingsGoal()"><i class="fa-solid fa-plus"></i> هدف جدید</button>
             </div>
+            ${savings.length === 0 ? '<div class="glass-card"><p style="color: var(--text-muted);">هیچ صندوق پس‌اندازی تعریف نشده است.</p></div>' : `
             <div class="metrics-grid">
                 ${savings.map(g => {
                     const pct = g.target > 0 ? Math.min(100, ((g.current / g.target) * 100)).toFixed(1) : 0;
@@ -508,35 +493,22 @@ class FinancialOS {
                         </div>
                     `;
                 }).join('')}
-            </div>
+            </div>`}
         `;
     }
 
     viewShahin(vStats, vehicleLogs, savings) {
-        const oilGoal = savings.find(s => s.name.includes('روغن')) || { target: 40000000, current: 4580005 };
-        const remainingAmount = oilGoal.target - oilGoal.current;
-        const requiredDaily = Math.round(remainingAmount / 210);
-
         return `
             <div class="glass-card" style="margin-bottom: 20px; display:flex; justify-content:space-between; align-items:center;">
                 <div>
-                    <h3 style="color: var(--neon-blue);">مدیریت خودروی تیبا ۱ (مدل ${vStats.year})</h3>
-                    <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 4px;">کارکرد: ${vStats.mileage.toLocaleString()} کیلومتر • سوخت: ${vStats.fuel} • هزینه هر کیلومتر: ${vStats.costPerKm} تومان</p>
+                    <h3 style="color: var(--neon-blue);">مدیریت خودروی Shahin (مدل Tiba 1)</h3>
+                    <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 4px;">کارکرد: ${vStats.mileage.toLocaleString()} کیلومتر • سوخت: ${vStats.fuel} • هزينه هر کیلومتر: ${vStats.costPerKm} تومان</p>
                 </div>
-                <button class="glass-btn" onclick="app.openAddVehicleLog()"><i class="fa-solid fa-wrench"></i> ثبت هزینه تعمیر/سرویس</button>
-            </div>
-            <div class="glass-card" style="margin-bottom: 20px;">
-                <h4 style="color: var(--neon-purple); margin-bottom: 12px;">هدف بحرانی: روغن‌سوزی تیبا</h4>
-                <div style="background: rgba(255,255,255,0.03); padding: 18px; border-radius: 12px;">
-                    <p style="margin-bottom: 8px;">مبلغ هدف: 40,000,000 تومان • جمع‌آوری شده: 4,580,005 تومان (پیشرفت ۱۱.۴۵٪)</p>
-                    <p style="color: var(--warning); margin-bottom: 12px; font-weight: 600;">⚠️ روزهای باقی‌مانده: 210 روز • پس‌انداز روزانه مورد نیاز: ${requiredDaily.toLocaleString()} تومان</p>
-                    <div style="background: rgba(255,255,255,0.05); height: 8px; border-radius: 4px; overflow: hidden;">
-                        <div style="background: var(--neon-blue); height: 100%; width: 11.45%;"></div>
-                    </div>
-                </div>
+                <button class="glass-btn" onclick="app.openAddVehicleLog()"><i class="fa-solid fa-wrench"></i> ثبت هزینه سرویس/تعمیر</button>
             </div>
             <div class="glass-card">
                 <h3 style="margin-bottom: 15px;">سوابق سرویس و تعمیرات خودرو</h3>
+                ${vehicleLogs.length === 0 ? '<p style="color: var(--text-muted);">هیچ سابقه تعمیراتی ثبت نشده است.</p>' : `
                 <table class="data-table">
                     <thead><tr><th>نوع سرویس</th><th>هزینه (تومان)</th><th>کیلومتر</th><th>توضیحات</th><th>تاریخ</th></tr></thead>
                     <tbody>
@@ -550,7 +522,7 @@ class FinancialOS {
                             </tr>
                         `).join('')}
                     </tbody>
-                </table>
+                </table>`}
             </div>
         `;
     }
@@ -566,16 +538,12 @@ class FinancialOS {
                 <h3 style="color: var(--neon-blue); margin-bottom: 16px;">کنترل بودجه و هشدارها</h3>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-bottom: 24px;">
                     <div class="glass-card" style="padding: 18px;">
-                        <h4 style="color:var(--text-muted)">بودجه روزانه</h4>
-                        <div style="font-size:1.4rem; font-weight:bold; margin-top:6px;">200,000 تومان</div>
-                    </div>
-                    <div class="glass-card" style="padding: 18px; border-color: var(--danger);">
-                        <h4 style="color:var(--danger)">مجموع هزینه‌ها</h4>
+                        <h4 style="color:var(--text-muted)">وضعیت هزینه‌ها</h4>
                         <div style="font-size:1.4rem; font-weight:bold; margin-top:6px; color: var(--danger);">${totalExp.toLocaleString()} تومان</div>
                     </div>
                 </div>
-                <div style="background: rgba(255,183,3,0.1); border: 1px solid var(--warning); padding: 16px; border-radius: 12px; color: var(--warning); font-weight: 500;">
-                    ⚠️ هشدار سقف بودجه: دسته‌های هزینه خوراک و متفرقه در حال سبقت از منابع درآمدی هستند.
+                <div style="background: rgba(0,230,255,0.06); border: 1px solid var(--neon-blue); padding: 16px; border-radius: 12px; color: var(--neon-blue); font-weight: 500;">
+                    💡 برای کنترل دقیق‌تر هزینه‌ها، تراکنش‌ها و سقف بودجه خود را به‌روز نگه دارید.
                 </div>
             </div>
         `;
@@ -587,13 +555,13 @@ class FinancialOS {
                 <div style="padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 12px;">
                     <i class="fa-solid fa-brain" style="font-size: 1.4rem; color: var(--neon-blue);"></i>
                     <div>
-                        <h3 style="font-size: 1.1rem; color: #fff;">Hop AI Financial Advisor</h3>
-                        <p style="font-size: 0.82rem; color: var(--text-muted);">تحلیلگر هوشمند دارایی‌ها، تراکنش‌ها و تیبا ۱</p>
+                        <h3 style="font-size: 1.1rem; color: #fff;">مشاور هوشمند Hop AI</h3>
+                        <p style="font-size: 0.82rem; color: var(--text-muted);">تحلیلگر هوشمند دارایی‌ها، تراکنش‌ها و خودروی Shahin</p>
                     </div>
                 </div>
                 <div id="ai-chat-messages" class="ai-messages">
                     <div class="ai-message assistant">
-                        درود Mr. Alavi. من دستیار هوشمند Hop AI هستم. تمام پلتفرم مالی و وضعیت خودرو تحلیل شد. چه دستوری دارید؟
+                        درود Mr. Alavi. من دستیار هوشمند Hop AI هستم. پلتفرم مالی شما آماده است. چه سوال یا دستوری دارید؟
                     </div>
                 </div>
                 <div class="ai-input-bar">
@@ -630,12 +598,13 @@ class FinancialOS {
         return `
             <div class="glass-card">
                 <h3 style="margin-bottom: 15px;">حساب‌ها و کیف پول‌های سیستم</h3>
+                ${accounts.length === 0 ? '<p style="color: var(--text-muted);">هیچ حسابی ثبت نشده است.</p>' : `
                 <table class="data-table">
                     <thead><tr><th>نام حساب</th><th>نوع</th><th>موجودی (تومان)</th></tr></thead>
                     <tbody>
                         ${accounts.map(a => `<tr><td>${a.name}</td><td>${a.type}</td><td style="color:${a.balance < 0 ? 'var(--danger)' : '#fff'}">${Number(a.balance).toLocaleString()}</td></tr>`).join('')}
                     </tbody>
-                </table>
+                </table>`}
             </div>
         `;
     }
@@ -659,7 +628,7 @@ class FinancialOS {
                 <h3 style="color: var(--neon-blue); margin-bottom: 15px;">تحلیل پیشرفته مالی و جریان نقدینگی</h3>
                 <p style="color:var(--text-muted); margin-bottom: 15px;">درآمد کل: ${metrics.income.toLocaleString()} تومان • هزینه کل: ${metrics.expense.toLocaleString()} تومان</p>
                 <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px;">
-                    <h4 style="color: var(--neon-purple); margin-bottom: 10px;">نرخ پس‌انداز (Saving Rate)</h4>
+                    <h4 style="color: var(--neon-purple); margin-bottom: 10px;">نرخ پس‌انداز</h4>
                     <div style="font-size: 1.6rem; font-weight: bold; color: ${metrics.savingRate > 0 ? 'var(--success)' : 'var(--danger)'};">${metrics.savingRate}%</div>
                 </div>
             </div>
@@ -668,15 +637,66 @@ class FinancialOS {
 
     viewSettings() { 
         return `
-            <div class="glass-card">
+            <div class="glass-card" style="margin-bottom: 20px;">
                 <h3 style="color: var(--neon-blue); margin-bottom: 15px;">تنظیمات سیستم و امنیت محلی</h3>
-                <div class="form-group" style="max-width:300px;">
+                <form onsubmit="app.updatePin(event)" class="form-group" style="max-width:350px;">
                     <label>تغییر رمز PIN امنیتی</label>
-                    <input type="password" id="new-pin-val" placeholder="رمز جدید 4 رقمی">
-                    <button class="glass-btn" style="margin-top: 10px; justify-content:center;" onclick="alert('رمز عبور با موفقیت بروز شد.')">ذخیره رمز جدید</button>
-                </div>
+                    <input type="password" id="new-pin-val" placeholder="رمز جدید حداقل 4 رقمی" required>
+                    <button type="submit" class="glass-btn" style="margin-top: 10px; justify-content:center;"><i class="fa-solid fa-key"></i> ذخیره رمز جدید</button>
+                </form>
+            </div>
+            <div class="glass-card" style="border-color: rgba(255,77,77,0.4);">
+                <h3 style="color: var(--danger); margin-bottom: 10px;">مدیریت داده‌های تستی TROR</h3>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px;">بازنشانی داده‌ها فقط اطلاعات TROR را پاکسازی کرده و پایگاه داده را به حالت اولیه خالی برمی‌گرداند.</p>
+                <button class="glass-btn" style="background: rgba(255,77,77,0.2); border-color: var(--danger); color: #fff;" onclick="app.resetDataSystem()"><i class="fa-solid fa-triangle-exclamation"></i> بازنشانی داده‌های تست TROR</button>
             </div>
         `; 
+    }
+
+    async updatePin(e) {
+        if (e) e.preventDefault();
+        const newPin = document.getElementById('new-pin-val').value;
+        if (!newPin || newPin.length < 4) {
+            alert('لطفاً یک رمز عبور معتبر حداقل ۴ رقمی وارد کنید.');
+            return;
+        }
+        const settingsList = await this.db.getAll('settings');
+        if (settingsList && settingsList.length > 0) {
+            settingsList[0].pin = newPin;
+            await this.db.update('settings', settingsList[0]);
+        } else {
+            await this.db.add('settings', { id: 'set_1', pin: newPin, currency: 'تومان' });
+        }
+        alert('رمز عبور جدید با موفقیت ذخیره شد و در ورودهای بعدی اعمال خواهد شد.');
+        document.getElementById('new-pin-val').value = '';
+    }
+
+    async resetDataSystem() {
+        if (confirm('آیا از بازنشانی و پاکسازی کامل داده‌های تستی TROR اطمینان دارید؟ تمامی تراکنش‌ها، صندوق‌ها و سوابق حذف خواهند شد.')) {
+            if (this.db.useLocalStorageFallback) {
+                const raw = JSON.parse(localStorage.getItem(this.db.fallbackKey)) || {};
+                raw.transactions = [];
+                raw.accounts = [];
+                raw.budgets = [];
+                raw.savings = [];
+                raw.vehicleLogs = [];
+                raw.aiHistory = [];
+                localStorage.setItem(this.db.fallbackKey, JSON.stringify(raw));
+            } else {
+                const stores = ['transactions', 'accounts', 'budgets', 'savings', 'vehicleLogs', 'aiHistory'];
+                for (const storeName of stores) {
+                    await new Promise((resolve) => {
+                        const transaction = this.db.db.transaction([storeName], 'readwrite');
+                        const store = transaction.objectStore(storeName);
+                        const req = store.clear();
+                        req.onsuccess = () => resolve(true);
+                        req.onerror = () => resolve(false);
+                    });
+                }
+            }
+            alert('داده‌های تست TROR با موفقیت بازنشانی و پاکسازی شدند.');
+            this.navigateTo('dashboard');
+        }
     }
 
     openQuickAdd() {
@@ -741,9 +761,9 @@ class FinancialOS {
 
     openAddVehicleLog() {
         this.openModal(`
-            <h3>ثبت هزینه سرویس و تعمیر تیبا ۱</h3>
+            <h3>ثبت هزینه سرویس و تعمیر Shahin</h3>
             <form onsubmit="app.saveVehicleLog(event)" style="margin-top: 15px;">
-                <div class="form-group"><label>نوع سرویس</label><input type="text" id="vl-type" required placeholder="مثال: تعویض روغن، تعویض پد"></div>
+                <div class="form-group"><label>نوع سرویس</label><input type="text" id="vl-type" required placeholder="مثال: تعویض روغن"></div>
                 <div class="form-group"><label>مبلغ (تومان)</label><input type="number" id="vl-amt" required placeholder="مثال: ۱۲۰۰۰۰۰"></div>
                 <div class="form-group"><label>کیلومتر</label><input type="number" id="vl-km" value="406922"></div>
                 <div class="form-group"><label>توضیحات</label><input type="text" id="vl-desc" placeholder="جزئیات تعمیر"></div>
@@ -760,7 +780,7 @@ class FinancialOS {
         const mileage = document.getElementById('vl-km').value;
 
         await this.db.add('vehicleLogs', { type, amount: amt, mileage, desc, date: new Date().toLocaleDateString('fa-IR') });
-        await this.db.add('transactions', { type: 'هزینه', category: 'تعمیرات تیبا', amount: amt, desc: `خودرو تیبا ۱: ${type} - ${desc}`, date: new Date().toLocaleDateString('fa-IR') });
+        await this.db.add('transactions', { type: 'هزینه', category: 'تعمیرات خودرو', amount: amt, desc: `Shahin (Tiba 1): ${type} - ${desc}`, date: new Date().toLocaleDateString('fa-IR') });
 
         this.closeModal();
         this.navigateTo(this.currentView);
@@ -770,7 +790,7 @@ class FinancialOS {
         this.openModal(`
             <h3>ایجاد هدف پس‌انداز جدید</h3>
             <form onsubmit="app.saveSavingsGoal(event)" style="margin-top: 15px;">
-                <div class="form-group"><label>نام صندوق/هدف</label><input type="text" id="sg-name" required placeholder="مثال: تعویض لاستیک"></div>
+                <div class="form-group"><label>نام صندوق/هدف</label><input type="text" id="sg-name" required placeholder="مثال: تعویض قطعات"></div>
                 <div class="form-group"><label>مبلغ هدف (تومان)</label><input type="number" id="sg-target" required placeholder="مثال: ۵۰۰۰۰۰۰"></div>
                 <div class="form-group"><label>مهلت (تاریخ)</label><input type="text" id="sg-deadline" value="1405/12/29"></div>
                 <button type="submit" class="glass-btn w-100" style="margin-top: 12px; justify-content:center;">ایجاد صندوق</button>
@@ -816,7 +836,7 @@ class FinancialOS {
 
     handleGlobalSearch(query) {
         if (!query || query.length < 2) return;
-        console.log('Search query:', query);
+        console.log('جستجو در سیستم:', query);
     }
 
     openModal(html) {
@@ -835,7 +855,7 @@ class FinancialOS {
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `TROR_PFOS_Enterprise_Backup_${new Date().toISOString().slice(0,10)}.json`;
+        a.download = `TROR_PFOS_Backup_${new Date().toISOString().slice(0,10)}.json`;
         a.click();
     }
 
