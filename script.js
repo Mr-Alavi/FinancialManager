@@ -91,7 +91,7 @@ function deleteRecord(index) {
 }
 
 function openSettings() {
-    alert("بخش تنظیمات مالی و بودجه آماده‌سازی شده است.");
+    alert("بخش تنظیمات سیستم فعال است.");
 }
 
 function backupData() {
