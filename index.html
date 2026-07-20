@@ -1,44 +1,58 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>T.R.O.R Finance</title>
+    <title>T . R . O . R - Financial Manager</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="app">
-        <div id="dashboard-page" class="page">
-            <h1 style="text-align: left;">T.R.O.R</h1>
-            <div class="dashboard-card">
-                <p>موجودی کل</p>
-                <div id="total-balance" class="balance">۰ تومان</div>
-            </div>
-            
-            <div class="glass-card">
-                <input type="number" id="amount" placeholder="مبلغ (تومان)">
-                <select id="category">
-                    <option value="income">درآمد</option>
-                    <option value="food">غذا</option>
-                    <option value="car">خودرو (تیبا ۱)</option>
-                </select>
-                <button class="btn-primary" onclick="saveTransaction()">ثبت تراکنش</button>
-            </div>
-        </div>
 
-        <div id="vehicle-page" class="page">
-            <h2 style="text-align: left;">خودرو تیبا ۱</h2>
-            <div class="dashboard-card">
-                <p>هزینه کل نگهداری</p>
-                <div id="vehicle-total" class="balance">۰ تومان</div>
-            </div>
+    <!-- صفحه ورود (Splash Screen) -->
+    <div id="splash-screen">
+        <div class="glass-card welcome-card">
+            <h1 class="neon-text-upper">Welcome to</h1>
+            <h2 class="white-text-lower">Mr. Alavi's Financial Project</h2>
         </div>
-
-        <nav class="bottom-nav">
-            <button onclick="switchPage('dashboard')">داشبورد</button>
-            <button onclick="switchPage('vehicle')">خودرو</button>
-        </nav>
     </div>
-    <script src="app.js"></script>
+
+    <!-- محتوای اصلی سایت -->
+    <div id="main-content" class="hidden">
+        <header>
+            <h1>T . R . O . R</h1>
+        </header>
+
+        <main>
+            <!-- پنل مدیریت -->
+            <section class="panel admin-panel glass-card">
+                <h2>Management Panel (پنل مدیریت)</h2>
+                <button class="glass-btn">Settings</button>
+                <button class="glass-btn">Data Backup</button>
+            </section>
+
+            <!-- پنل کاربردی -->
+            <section class="panel functional-panel glass-card">
+                <h2>Functional Panel (پنل کاربردی)</h2>
+                <div class="grid-13">
+                    <!-- تولید ۱۳ دکمه به عنوان نمونه -->
+                    <button class="glass-btn" onclick="openSection(1)">Section 1</button>
+                    <button class="glass-btn" onclick="openSection(2)">Section 2</button>
+                    <button class="glass-btn" onclick="openSection(3)">Section 3</button>
+                    <button class="glass-btn" onclick="openSection(4)">Section 4</button>
+                    <button class="glass-btn" onclick="openSection(5)">Section 5</button>
+                    <button class="glass-btn" onclick="openSection(6)">Section 6</button>
+                    <button class="glass-btn" onclick="openSection(7)">Section 7</button>
+                    <button class="glass-btn" onclick="openSection(8)">Section 8</button>
+                    <button class="glass-btn" onclick="openSection(9)">Section 9</button>
+                    <button class="glass-btn" onclick="openSection(10)">Section 10</button>
+                    <button class="glass-btn" onclick="openSection(11)">Section 11</button>
+                    <button class="glass-btn" onclick="openSection(12)">Section 12</button>
+                    <button class="glass-btn" onclick="openSection(13)">Section 13</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
