@@ -8,7 +8,7 @@
 </head>
 <body>
 
-    <!-- صفحه ورود (Splash Screen) -->
+    <!-- صفحه ورود (Splash Screen) - انگلیسی -->
     <div id="splash-screen">
         <div class="glass-card welcome-card">
             <h1 class="neon-text-upper">Welcome to</h1>
@@ -23,33 +23,88 @@
         </header>
 
         <main>
-            <!-- پنل مدیریت -->
-            <section class="panel admin-panel glass-card">
-                <h2>Management Panel (پنل مدیریت)</h2>
-                <button class="glass-btn">Settings</button>
-                <button class="glass-btn">Data Backup</button>
-            </section>
+            <!-- داشبورد اصلی -->
+            <div id="dashboard-view">
+                <!-- پنل مدیریت -->
+                <section class="panel admin-panel glass-card">
+                    <h2>پنل مدیریت</h2>
+                    <div class="panel-btns">
+                        <button class="glass-btn" onclick="openSettings()">⚙ تنظیمات مالی و بودجه</button>
+                        <button class="glass-btn" onclick="backupData()">💾 پشتیبان‌گیری داده‌ها</button>
+                    </div>
+                </section>
 
-            <!-- پنل کاربردی -->
-            <section class="panel functional-panel glass-card">
-                <h2>Functional Panel (پنل کاربردی)</h2>
-                <div class="grid-13">
-                    <!-- تولید ۱۳ دکمه به عنوان نمونه -->
-                    <button class="glass-btn" onclick="openSection(1)">Section 1</button>
-                    <button class="glass-btn" onclick="openSection(2)">Section 2</button>
-                    <button class="glass-btn" onclick="openSection(3)">Section 3</button>
-                    <button class="glass-btn" onclick="openSection(4)">Section 4</button>
-                    <button class="glass-btn" onclick="openSection(5)">Section 5</button>
-                    <button class="glass-btn" onclick="openSection(6)">Section 6</button>
-                    <button class="glass-btn" onclick="openSection(7)">Section 7</button>
-                    <button class="glass-btn" onclick="openSection(8)">Section 8</button>
-                    <button class="glass-btn" onclick="openSection(9)">Section 9</button>
-                    <button class="glass-btn" onclick="openSection(10)">Section 10</button>
-                    <button class="glass-btn" onclick="openSection(11)">Section 11</button>
-                    <button class="glass-btn" onclick="openSection(12)">Section 12</button>
-                    <button class="glass-btn" onclick="openSection(13)">Section 13</button>
+                <!-- پنل کاربردی (۱۳ بخش) -->
+                <section class="panel functional-panel glass-card">
+                    <h2>پنل کاربردی (۱۳ بخش مالی)</h2>
+                    <div class="grid-13">
+                        <button class="glass-btn" onclick="openSection(1, 'فروردین')">1. فروردین 📅</button>
+                        <button class="glass-btn" onclick="openSection(2, 'اردیبهشت')">2. اردیبهشت 📅</button>
+                        <button class="glass-btn" onclick="openSection(3, 'خرداد')">3. خرداد 📅</button>
+                        <button class="glass-btn" onclick="openSection(4, 'تیر')">4. تیر 📅</button>
+                        <button class="glass-btn" onclick="openSection(5, 'مرداد')">5. مرداد 📅</button>
+                        <button class="glass-btn" onclick="openSection(6, 'شهریور')">6. شهریور 📅</button>
+                        <button class="glass-btn" onclick="openSection(7, 'مهر')">7. مهر 📅</button>
+                        <button class="glass-btn" onclick="openSection(8, 'آبان')">8. آبان 📅</button>
+                        <button class="glass-btn" onclick="openSection(9, 'آذر')">9. آذر 📅</button>
+                        <button class="glass-btn" onclick="openSection(10, 'دی')">10. دی 📅</button>
+                        <button class="glass-btn" onclick="openSection(11, 'بهمن')">11. بهمن 📅</button>
+                        <button class="glass-btn" onclick="openSection(12, 'اسفند')">12. اسفند 📅</button>
+                        <button class="glass-btn special-btn" onclick="openSection(13, 'گزارش ماشین و صندوق‌ها')">13. ماشین و صندوق‌ها 🚗</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- نمای داخلی هر بخش -->
+            <div id="section-view" class="hidden glass-card">
+                <div class="section-header">
+                    <button class="glass-btn back-btn" onclick="backToDashboard()">← بازگشت به منوی اصلی</button>
+                    <h2 id="section-title">عنوان بخش</h2>
                 </div>
-            </section>
+                
+                <div class="form-container">
+                    <h3>ثبت تراکنش جدید</h3>
+                    <form id="transaction-form" onsubmit="saveTransaction(event)">
+                        <div class="form-group">
+                            <label>مبلغ (تومان):</label>
+                            <input type="number" id="tx-amount" required placeholder="مثال: 500000">
+                        </div>
+                        <div class="form-group">
+                            <label>نوع تراکنش:</label>
+                            <select id="tx-type">
+                                <option value="هزینه">هزینه</option>
+                                <option value="درآمد">درآمد</option>
+                                <option value="متفرقه">متفرقه</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>دسته‌بندی:</label>
+                            <select id="tx-category">
+                                <option value="خوراک">🍕 خوراک</option>
+                                <option value="ماشین">🚗 ماشین</option>
+                                <option value="تعمیرات تیبا">🛠 تعمیرات تیبا</option>
+                                <option value="سوخت">⛽ سوخت</option>
+                                <option value="قبض">🧾 قبض</option>
+                                <option value="خرید">🛍 خرید</option>
+                                <option value="کار">💼 کار</option>
+                                <option value="متفرقه">📌 متفرقه</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>توضیحات:</label>
+                            <input type="text" id="tx-desc" placeholder="توضیحات تراکنش...">
+                        </div>
+                        <button type="submit" class="glass-btn submit-btn">ثبت و ذخیره</button>
+                    </form>
+                </div>
+
+                <div class="records-container">
+                    <h3>تراکنش‌های ثبت شده در این بخش</h3>
+                    <div id="records-list">
+                        <!-- لیست تراکنش‌ها -->
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
