@@ -1,12 +1,13 @@
 /**
  * TROR Personal Financial Operating System - Enterprise Core Architecture
  * Fully localized, secure, and production-ready version for Mr Alavi.
+ * Upgraded with Shahin Smart Maintenance Foundation.
  */
 
 class DatabaseManager {
     constructor() {
         this.dbName = 'TROR_PFOS_EnterpriseDB';
-        this.dbVersion = 1;
+        this.dbVersion = 2; // Upgraded version for maintenance store
         this.db = null;
         this.useLocalStorageFallback = false;
         this.fallbackKey = 'tror_pfos_fallback_store';
@@ -31,7 +32,7 @@ class DatabaseManager {
 
             request.onupgradeneeded = (e) => {
                 const db = e.target.result;
-                const stores = ['transactions', 'accounts', 'budgets', 'savings', 'vehicleLogs', 'aiHistory', 'settings'];
+                const stores = ['transactions', 'accounts', 'budgets', 'savings', 'vehicleLogs', 'aiHistory', 'settings', 'maintenance'];
                 stores.forEach(store => {
                     if (!db.objectStoreNames.contains(store)) {
                         db.createObjectStore(store, { keyPath: 'id' });
@@ -55,11 +56,19 @@ class DatabaseManager {
                 budgets: [],
                 vehicleLogs: [],
                 aiHistory: [],
+                maintenance: [],
                 settings: [
                     { id: 'set_1', pin: '1234', currency: 'تومان', language: 'fa', theme: 'luxury-dark', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), version: 1, isDeleted: false, syncStatus: 'synced', history: [] }
                 ]
             };
             localStorage.setItem(this.fallbackKey, JSON.stringify(initial));
+        } else {
+            // Ensure maintenance store exists in fallback if migrating
+            const raw = JSON.parse(localStorage.getItem(this.fallbackKey)) || {};
+            if (!raw.maintenance) {
+                raw.maintenance = [];
+                localStorage.setItem(this.fallbackKey, JSON.stringify(raw));
+            }
         }
     }
 
@@ -194,7 +203,7 @@ class DatabaseManager {
     }
 
     async exportAllData() {
-        const stores = ['transactions', 'accounts', 'budgets', 'savings', 'vehicleLogs', 'aiHistory', 'settings'];
+        const stores = ['transactions', 'accounts', 'budgets', 'savings', 'vehicleLogs', 'aiHistory', 'settings', 'maintenance'];
         const exportObj = {};
         for (const s of stores) {
             exportObj[s] = await this.getAll(s);
@@ -229,7 +238,7 @@ class FinancialEngine {
 class VehicleEngine {
     constructor() {
         this.model = 'Tiba 1';
-        this.year = '1391';
+        this.year = '1390';
         this.mileage = 406922;
         this.fuel = 'CNG/Petrol';
     }
@@ -246,6 +255,58 @@ class VehicleEngine {
             costPerKm
         };
     }
+
+    static getPartCategories() {
+        return {
+            'موتور (Engine)': [
+                'روغن موتور (Engine Oil)',
+                'فیلتر روغن (Oil Filter)',
+                'فیلتر هوا (Air Filter)',
+                'فیلتر بنزین (Fuel Filter)',
+                'تسمه تایم (Timing Belt)',
+                'تسمه دینام (Alternator Belt)',
+                'شمع‌ها (Spark Plugs)',
+                'روغن گیربکس (Gear Oil)',
+                'ضد یخ / مایع خنک‌کننده (Coolant)'
+            ],
+            'سیستم ترمز (Brakes)': [
+                'لنت ترمز (Brake Pads)',
+                'روغن ترمز (Brake Fluid)'
+            ],
+            'برق و الکترونیک (Electrical)': [
+                'باتری (Battery)',
+                'چراغ‌ها (Lights)'
+            ],
+            'سایر (Other)': [
+                'لاستیک‌ها (Tires)',
+                'برف‌پاک‌کن‌ها (Wipers)'
+            ]
+        };
+    }
+
+    static calculateStatus(nextKm, nextDate, currentKm = 406922) {
+        // Green: OK, Yellow: Close (within 500km), Red: Expired (passed km or passed date)
+        if (!nextKm && !nextDate) return { status: 'green', label: 'عالی / بدون هشدار' };
+
+        let isKmClose = false;
+        let isExpired = false;
+
+        if (nextKm) {
+            const numNext = Number(nextKm);
+            if (currentKm >= numNext) {
+                isExpired = true;
+            } else if (numNext - currentKm <= 500) {
+                isKmClose = true;
+            }
+        }
+
+        if (isExpired) {
+            return { status: 'red', label: 'سررسید گذشته (قرمز)' };
+        } else if (isKmClose) {
+            return { status: 'yellow', label: 'در آستانه سررسید (زرد)' };
+        }
+        return { status: 'green', label: 'وضعیت مطلوب (سبز)' };
+    }
 }
 
 class AIEngine {
@@ -261,7 +322,7 @@ class AIEngine {
         } else {
             advice.push("✨ Hop AI: روند مالی شما تحت کنترل است. به ثبت دقیق تراکنش‌ها ادامه دهید.");
         }
-        advice.push("🚗 وضعیت خودروی Shahin (مدل Tiba 1 با کارکرد ۴۰۶,۹۲۲ کیلومتر) پایدار است. پایش هزینه‌های سوخت و سرویس‌های دوره‌ای فراموش نشود.");
+        advice.push("🚗 وضعیت خودروی Shahin (مدل Tiba 1 با کارکرد ۴۰۶,۹۲۲ کیلومتر) پایدار است. پایش سیستم هوشمند نگهداری و تعویض قطعات (موتور، ترمز و برق) از طریق ماژول تخصصی توصیه می‌شود.");
         
         return advice.join('\n\n');
     }
@@ -353,6 +414,7 @@ class FinancialOS {
         const savings = await this.db.getAll('savings');
         const budgets = await this.db.getAll('budgets');
         const vehicleLogs = await this.db.getAll('vehicleLogs');
+        const maintenanceRecords = await this.db.getAll('maintenance');
         const metrics = FinancialEngine.computeMetrics(transactions, savings, budgets);
         const vehicleStats = this.vehicle.calculateVehicleStats(vehicleLogs);
 
@@ -374,7 +436,7 @@ class FinancialOS {
             case 'accounts':
                 return this.viewAccounts(accounts);
             case 'shahin':
-                return this.viewShahin(vehicleStats, vehicleLogs, savings);
+                return this.viewShahin(vehicleStats, vehicleLogs, maintenanceRecords);
             case 'ai-assistant':
                 return this.viewAIAssistant(transactions, vehicleLogs, savings);
             case 'settings':
@@ -497,17 +559,42 @@ class FinancialOS {
         `;
     }
 
-    viewShahin(vStats, vehicleLogs, savings) {
+    viewShahin(vStats, vehicleLogs, maintenanceRecords) {
         return `
-            <div class="glass-card" style="margin-bottom: 20px; display:flex; justify-content:space-between; align-items:center;">
+            <div class="glass-card" style="margin-bottom: 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px;">
                 <div>
-                    <h3 style="color: var(--neon-blue);">مدیریت خودروی Shahin (مدل Tiba 1)</h3>
-                    <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 4px;">کارکرد: ${vStats.mileage.toLocaleString()} کیلومتر • سوخت: ${vStats.fuel} • هزینه هر کیلومتر: ${vStats.costPerKm} تومان</p>
+                    <h3 style="color: var(--neon-blue);">مدیریت هوشمند خودروی Shahin (مدل Tiba 1)</h3>
+                    <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 4px;">کارکرد فعلی: ${vStats.mileage.toLocaleString()} کیلومتر • سوخت: ${vStats.fuel} • هزینه هر کیلومتر: ${vStats.costPerKm} تومان</p>
                 </div>
-                <button class="glass-btn" onclick="app.openAddVehicleLog()"><i class="fa-solid fa-wrench"></i> ثبت هزینه سرویس/تعمیر</button>
+                <button class="glass-btn" onclick="app.openAddVehicleLog()"><i class="fa-solid fa-wrench"></i> ثبت سرویس و تعمیر جدید</button>
             </div>
+
+            <!-- Smart Maintenance Status Foundation Grid -->
+            <div class="glass-card" style="margin-bottom: 20px;">
+                <h3 style="color: var(--neon-purple); margin-bottom: 16px;"><i class="fa-solid fa-shield-halved"></i> سیستم پایش هوشمند قطعات و سرویس‌ها</h3>
+                ${maintenanceRecords.length === 0 ? '<p style="color: var(--text-muted); font-size: 0.9rem;">هیچ قطعه یا سرویسی با پایش هوشمند ثبت نشده است. از دکمه ثبت سرویس جدید استفاده کنید.</p>' : `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+                    ${maintenanceRecords.map(m => {
+                        const statusCalc = VehicleEngine.calculateStatus(m.nextKm, m.nextDate, vStats.mileage);
+                        const statusColor = statusCalc.status === 'red' ? 'var(--danger)' : (statusCalc.status === 'yellow' ? 'var(--warning)' : 'var(--success)');
+                        return `
+                            <div class="glass-card" style="padding: 16px; border-left: 4px solid ${statusColor};">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <h4 style="color: #fff; font-size: 0.95rem;">${m.partName || m.serviceTitle}</h4>
+                                    <span style="font-size: 0.75rem; padding: 3px 8px; border-radius: 6px; background: rgba(255,255,255,0.06); color: ${statusColor}; font-weight: bold;">${statusCalc.label}</span>
+                                </div>
+                                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px;">عنوان: ${m.serviceTitle}</p>
+                                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px;">آخرین تعویض: ${m.lastKm ? Number(m.lastKm).toLocaleString() + ' KM' : '-'} (${m.lastDate || '-'})</p>
+                                <p style="font-size: 0.85rem; color: var(--neon-blue); margin-bottom: 8px;">سررسید بعدی: ${m.nextKm ? Number(m.nextKm).toLocaleString() + ' KM' : '-'} / ${m.nextDate || '-'}</p>
+                                <div style="font-size: 0.85rem; color: #fff; font-weight: 600;">هزینه: ${Number(m.cost).toLocaleString()} تومان</div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>`}
+            </div>
+
             <div class="glass-card">
-                <h3 style="margin-bottom: 15px;">سوابق سرویس و تعمیرات خودرو</h3>
+                <h3 style="margin-bottom: 15px;">سوابق کامل سرویس و تعمیرات خودرو</h3>
                 ${vehicleLogs.length === 0 ? '<p style="color: var(--text-muted);">هیچ سابقه تعمیراتی ثبت نشده است.</p>' : `
                 <table class="data-table">
                     <thead><tr><th>نوع سرویس</th><th>هزینه (تومان)</th><th>کیلومتر</th><th>توضیحات</th><th>تاریخ</th></tr></thead>
@@ -561,7 +648,7 @@ class FinancialOS {
                 </div>
                 <div id="ai-chat-messages" class="ai-messages">
                     <div class="ai-message assistant">
-                        درود Mr Alavi. من دستیار هوشمند Hop AI هستم. پلتفرم مالی شما آماده است. چه سوال یا دستوری دارید؟
+                        درود Mr Alavi. من دستیار هوشمند Hop AI هستم. پلتفرم مالی و سیستم نگهداری هوشمند خودروی Shahin آماده است. چه سوال یا دستوری دارید؟
                     </div>
                 </div>
                 <div class="ai-input-bar">
@@ -796,27 +883,135 @@ class FinancialOS {
     }
 
     openAddVehicleLog() {
+        const categories = VehicleEngine.getPartCategories();
+        let optionsHtml = '';
+        for (const [catName, parts] of Object.entries(categories)) {
+            optionsHtml += `<optgroup label="${catName}">`;
+            parts.forEach(p => {
+                optionsHtml += `<option value="${p}">${p}</option>`;
+            });
+            optionsHtml += `</optgroup>`;
+        }
+
         this.openModal(`
-            <h3>ثبت هزینه سرویس و تعمیر Shahin</h3>
+            <h3>ثبت سرویس و تعمیر هوشمند Shahin</h3>
             <form onsubmit="app.saveVehicleLog(event)" style="margin-top: 15px;">
-                <div class="form-group"><label>نوع سرویس</label><input type="text" id="vl-type" required placeholder="مثال: تعویض روغن"></div>
+                <div class="form-group">
+                    <label>قطعه / سیستم خودرو</label>
+                    <select id="vl-part" style="width:100%; padding:12px; background:rgba(0,0,0,0.58); border:1px solid rgba(138,43,226,0.35); border-radius:12px; color:#fff;">
+                        ${optionsHtml}
+                    </select>
+                </div>
+                <div class="form-group"><label>عنوان سرویس</label><input type="text" id="vl-type" required placeholder="مثال: تعویض روغن و فیلتر"></div>
                 <div class="form-group"><label>مبلغ (تومان)</label><input type="number" id="vl-amt" required placeholder="مثال: ۱۲۰۰۰۰۰"></div>
-                <div class="form-group"><label>کیلومتر</label><input type="number" id="vl-km" value="406922"></div>
-                <div class="form-group"><label>توضیحات</label><input type="text" id="vl-desc" placeholder="جزئیات تعمیر"></div>
-                <button type="submit" class="glass-btn w-100" style="margin-top: 12px; justify-content:center;">ثبت و انتقال به مالی</button>
+                <div class="form-group"><label>کیلومتر فعلی خودرو</label><input type="number" id="vl-km" value="406922"></div>
+                <div class="form-group"><label>تاریخ سرویس</label><input type="text" id="vl-date" value="1405/04/30"></div>
+                <div class="form-group"><label>توضیحات</label><input type="text" id="vl-desc" placeholder="جزئیات تعمیر یا تعویض"></div>
+                
+                <!-- Maintenance Reminder Section -->
+                <div style="background: rgba(138, 43, 226, 0.1); border: 1px solid rgba(138, 43, 226, 0.3); padding: 15px; border-radius: 12px; margin-top: 15px; margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <label style="color: var(--neon-blue); font-weight: bold; margin: 0;">یادآور سرویس (Maintenance Reminder)</label>
+                        <select id="vl-reminder-toggle" onchange="app.toggleReminderFields(this.value)" style="padding: 6px 12px; background: rgba(0,0,0,0.6); border: 1px solid var(--neon-blue); border-radius: 8px; color: #fff; font-size: 0.85rem;">
+                            <option value="OFF">غیرفعال (OFF)</option>
+                            <option value="ON">فعال (ON)</option>
+                        </select>
+                    </div>
+
+                    <div id="reminder-options-container" class="hidden" style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+                        <div class="form-group" style="margin: 0;">
+                            <label>نوع یادآور</label>
+                            <select id="vl-reminder-type" onchange="app.toggleReminderType(this.value)" style="width:100%; padding:10px; background:rgba(0,0,0,0.58); border:1px solid rgba(138,43,226,0.35); border-radius:10px; color:#fff;">
+                                <option value="km">کیلومتر محور (Kilometer Based)</option>
+                                <option value="date">تاریخ محور (Date Based)</option>
+                                <option value="both">هر دو (Kilometer + Date)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="group-next-km" style="margin: 0;">
+                            <label>کیلومتر سررسید بعدی</label>
+                            <input type="number" id="vl-next-km" value="411922" placeholder="مثال: 411922">
+                        </div>
+                        <div class="form-group hidden" id="group-next-date" style="margin: 0;">
+                            <label>تاریخ سررسید بعدی</label>
+                            <input type="text" id="vl-next-date" value="1405/10/30" placeholder="مثال: 1405/10/30">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="glass-btn w-100" style="margin-top: 12px; justify-content:center;">ثبت و انتقال به سیستم مالی</button>
             </form>
         `);
     }
 
+    toggleReminderFields(val) {
+        const container = document.getElementById('reminder-options-container');
+        if (val === 'ON') {
+            container?.classList.remove('hidden');
+        } else {
+            container?.classList.add('hidden');
+        }
+    }
+
+    toggleReminderType(typeVal) {
+        const groupKm = document.getElementById('group-next-km');
+        const groupDate = document.getElementById('group-next-date');
+        if (typeVal === 'km') {
+            groupKm?.classList.remove('hidden');
+            groupDate?.classList.add('hidden');
+        } else if (typeVal === 'date') {
+            groupKm?.classList.add('hidden');
+            groupDate?.classList.remove('hidden');
+        } else if (typeVal === 'both') {
+            groupKm?.classList.remove('hidden');
+            groupDate?.classList.remove('hidden');
+        }
+    }
+
     async saveVehicleLog(e) {
         e.preventDefault();
-        const amt = document.getElementById('vl-amt').value;
+        const partName = document.getElementById('vl-part').value;
         const type = document.getElementById('vl-type').value;
-        const desc = document.getElementById('vl-desc').value;
+        const amt = document.getElementById('vl-amt').value;
         const mileage = document.getElementById('vl-km').value;
+        const date = document.getElementById('vl-date').value;
+        const desc = document.getElementById('vl-desc').value;
+        
+        const reminderToggle = document.getElementById('vl-reminder-toggle').value;
+        let nextKm = null;
+        let nextDate = null;
+        let status = 'green';
 
-        await this.db.add('vehicleLogs', { type, amount: amt, mileage, desc, date: new Date().toLocaleDateString('fa-IR') });
-        await this.db.add('transactions', { type: 'هزینه', category: 'تعمیرات خودرو', amount: amt, desc: `Shahin (Tiba 1): ${type} - ${desc}`, date: new Date().toLocaleDateString('fa-IR') });
+        if (reminderToggle === 'ON') {
+            const rType = document.getElementById('vl-reminder-type').value;
+            if (rType === 'km' || rType === 'both') {
+                nextKm = document.getElementById('vl-next-km').value;
+            }
+            if (rType === 'date' || rType === 'both') {
+                nextDate = document.getElementById('vl-next-date').value;
+            }
+            const statusCalc = VehicleEngine.calculateStatus(nextKm, nextDate, mileage);
+            status = statusCalc.status;
+        }
+
+        // Save to legacy vehicleLogs store for full backward compatibility
+        await this.db.add('vehicleLogs', { type, amount: amt, mileage, desc, date });
+
+        // Save to new maintenance store
+        await this.db.add('maintenance', {
+            vehicleName: 'Shahin (Tiba 1)',
+            partName,
+            serviceTitle: type,
+            lastDate: date,
+            lastKm: mileage,
+            nextDate,
+            nextKm,
+            cost: amt,
+            description: desc,
+            status
+        });
+
+        // Add to financial transactions
+        await this.db.add('transactions', { type: 'هزینه', category: 'تعمیرات خودرو', amount: amt, desc: `Shahin (Tiba 1) - ${partName}: ${type} - ${desc}`, date });
 
         this.closeModal();
         this.navigateTo(this.currentView);
