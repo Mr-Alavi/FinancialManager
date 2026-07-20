@@ -29,12 +29,12 @@
                 <section class="panel admin-panel glass-card">
                     <h2>پنل مدیریت</h2>
                     <div class="panel-btns">
-                        <button class="glass-btn" onclick="openSettings()">⚙ تنظیمات سیستم</button>
+                        <button class="glass-btn" onclick="openSection(12, 'تنظیمات')">⚙ تنظیمات سیستم</button>
                         <button class="glass-btn" onclick="backupData()">💾 پشتیبان‌گیری داده‌ها</button>
                     </div>
                 </section>
 
-                <!-- پنل کاربردی (۱۳ بخش اصلی) -->
+                <!-- پنل کاربردی (۱۳ بخش اصلی با عملکرد اختصاصی) -->
                 <section class="panel functional-panel glass-card">
                     <h2>پنل کاربردی (۱۳ بخش مالی)</h2>
                     <div class="grid-13">
@@ -55,60 +55,21 @@
                 </section>
             </div>
 
-            <!-- نمای داخلی هر بخش -->
+            <!-- نمای داخلی داینامیک مختص هر بخش -->
             <div id="section-view" class="hidden glass-card">
                 <div class="section-header">
                     <button class="glass-btn back-btn" onclick="backToDashboard()">← بازگشت به منوی اصلی</button>
                     <h2 id="section-title">عنوان بخش</h2>
                 </div>
                 
-                <div class="form-container">
-                    <h3>ثبت تراکنش جدید</h3>
-                    <form id="transaction-form" onsubmit="saveTransaction(event)">
-                        <div class="form-group">
-                            <label>مبلغ (تومان):</label>
-                            <input type="number" id="tx-amount" required placeholder="مثال: 500000">
-                        </div>
-                        <div class="form-group">
-                            <label>نوع تراکنش:</label>
-                            <select id="tx-type">
-                                <option value="هزینه">هزینه</option>
-                                <option value="درآمد">درآمد</option>
-                                <option value="متفرقه">متفرقه</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>دسته‌بندی:</label>
-                            <select id="tx-category">
-                                <option value="خوراک">🍕 خوراک</option>
-                                <option value="ماشین">🚗 ماشین</option>
-                                <option value="تعمیرات تیبا">🛠 تعمیرات تیبا</option>
-                                <option value="سوخت">⛽ سوخت</option>
-                                <option value="قبض">🧾 قبض</option>
-                                <option value="خرید">🛍 خرید</option>
-                                <option value="کار">💼 کار</option>
-                                <option value="متفرقه">📌 متفرقه</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>توضیحات:</label>
-                            <input type="text" id="tx-desc" placeholder="توضیحات تراکنش...">
-                        </div>
-                        <button type="submit" class="glass-btn submit-btn">ثبت و ذخیره</button>
-                    </form>
-                </div>
-
-                <div class="records-container">
-                    <h3>تراکنش‌های ثبت شده در این بخش</h3>
-                    <div id="records-list">
-                        <!-- لیست تراکنش‌ها -->
-                    </div>
+                <!-- محتوای متناسب با هر بخش به صورت پویا اینجا بارگذاری می‌شود -->
+                <div id="section-dynamic-content">
+                    <!-- محتوا بر اساس انتخاب کاربر تغییر می‌کند -->
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- اضافه کردن نسخه برای جلوگیری از کش شدن مرورگر -->
-    <script src="script.js?v=2"></script>
+    <script src="script.js?v=3"></script>
 </body>
 </html>
