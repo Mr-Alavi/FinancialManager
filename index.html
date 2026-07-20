@@ -1,75 +1,90 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>T . R . O . R - Financial Manager</title>
+    <title>TROR - Personal Financial Operating System</title>
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <!-- صفحه ورود (Splash Screen) -->
+    <div class="ambient-mesh"></div>
+
+    <!-- Splash Screen -->
     <div id="splash-screen">
-        <div class="glass-card welcome-card">
-            <h1 class="neon-text-upper">Welcome to</h1>
-            <h2 class="white-text-lower">Mr. Alavi's Financial Project</h2>
+        <div class="glass-card splash-content">
+            <h1 class="neon-title">T . R . O . R</h1>
+            <p class="sub-title">Personal Financial Operating System</p>
+            <div class="splash-loader"><span></span></div>
         </div>
     </div>
 
-    <!-- محتوای اصلی سایت -->
-    <div id="main-content" class="hidden">
-        <header>
-            <h1>T . R . O . R</h1>
-        </header>
-
-        <main>
-            <!-- داشبورد اصلی -->
-            <div id="dashboard-view">
-                <!-- پنل مدیریت -->
-                <section class="panel admin-panel glass-card">
-                    <h2>پنل مدیریت</h2>
-                    <div class="panel-btns">
-                        <button class="glass-btn" onclick="openSection(12, 'تنظیمات')">⚙ تنظیمات سیستم</button>
-                        <button class="glass-btn" onclick="backupData()">💾 پشتیبان‌گیری داده‌ها</button>
-                    </div>
-                </section>
-
-                <!-- پنل کاربردی (۱۳ بخش اصلی با عملکرد اختصاصی) -->
-                <section class="panel functional-panel glass-card">
-                    <h2>پنل کاربردی (۱۳ بخش مالی)</h2>
-                    <div class="grid-13">
-                        <button class="glass-btn" onclick="openSection(1, 'خلاصه مالی')">1. خلاصه مالی 📊</button>
-                        <button class="glass-btn" onclick="openSection(2, 'ثبت')">2. ثبت 📝</button>
-                        <button class="glass-btn" onclick="openSection(3, 'بودجه روزانه')">3. بودجه روزانه 💵</button>
-                        <button class="glass-btn" onclick="openSection(4, 'دسته‌بندی')">4. دسته‌بندی 🗂️</button>
-                        <button class="glass-btn" onclick="openSection(5, 'دسته بندی هزینه')">5. دسته بندی هزینه 🏷️</button>
-                        <button class="glass-btn" onclick="openSection(6, 'تحلیل هزینه')">6. تحلیل هزینه 📈</button>
-                        <button class="glass-btn" onclick="openSection(7, 'صندوق‌های پس‌انداز')">7. صندوق‌های پس‌انداز 💰</button>
-                        <button class="glass-btn" onclick="openSection(8, 'داشبورد')">8. داشبورد 📊</button>
-                        <button class="glass-btn" onclick="openSection(9, 'گزارش ماهانه')">9. گزارش ماهانه 📑</button>
-                        <button class="glass-btn" onclick="openSection(10, 'اهداف')">10. اهداف 🎯</button>
-                        <button class="glass-btn" onclick="openSection(11, 'حساب‌ها')">11. حساب‌ها 💳</button>
-                        <button class="glass-btn" onclick="openSection(12, 'تنظیمات')">12. تنظیمات ⚙️</button>
-                        <button class="glass-btn special-btn" onclick="openSection(13, 'شاهین')">13. شاهین 🚗</button>
-                    </div>
-                </section>
+    <!-- Security Lock Screen -->
+    <div id="security-lock-screen" class="hidden">
+        <div class="glass-card" style="padding: 40px; text-align: center; width: 100%; max-width: 400px;">
+            <i class="fa-solid fa-shield-halved" style="font-size: 3rem; color: var(--neon-blue); margin-bottom: 20px;"></i>
+            <h2 style="margin-bottom: 10px; color: #fff;">System Locked</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 25px;">Enter security PIN to access TROR PFOS</p>
+            <div class="form-group">
+                <input type="password" id="unlock-pin" placeholder="PIN (Default: 1234)" style="text-align: center; letter-spacing: 5px; font-size: 1.2rem;" onkeydown="if(event.key==='Enter') app.verifyPin()">
             </div>
-
-            <!-- نمای داخلی داینامیک مختص هر بخش -->
-            <div id="section-view" class="hidden glass-card">
-                <div class="section-header">
-                    <button class="glass-btn back-btn" onclick="backToDashboard()">← بازگشت به منوی اصلی</button>
-                    <h2 id="section-title">عنوان بخش</h2>
-                </div>
-                
-                <!-- محتوای متناسب با هر بخش به صورت پویا اینجا بارگذاری می‌شود -->
-                <div id="section-dynamic-content">
-                    <!-- محتوا بر اساس انتخاب کاربر تغییر می‌کند -->
-                </div>
-            </div>
-        </main>
+            <button class="glass-btn w-100" style="justify-content: center; margin-top: 10px;" onclick="app.verifyPin()"><i class="fa-solid fa-lock-open"></i> Unlock System</button>
+        </div>
     </div>
 
-    <script src="script.js?v=3"></script>
+    <!-- App Shell -->
+    <div id="app-shell" class="hidden">
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h2>T . R . O . R</h2>
+            </div>
+            <div class="sidebar-search">
+                <input type="text" id="global-search-input" placeholder="Search system..." oninput="app.handleGlobalSearch(this.value)">
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" onclick="app.navigateTo('dashboard')" class="nav-item active" data-target="dashboard"><i class="fa-solid fa-chart-pie"></i> <span>Dashboard</span></a>
+                <a href="#" onclick="app.navigateTo('transactions')" class="nav-item" data-target="transactions"><i class="fa-solid fa-right-left"></i> <span>Transactions</span></a>
+                <a href="#" onclick="app.navigateTo('budget')" class="nav-item" data-target="budget"><i class="fa-solid fa-bullseye"></i> <span>Budget Control</span></a>
+                <a href="#" onclick="app.navigateTo('analysis')" class="nav-item" data-target="analysis"><i class="fa-solid fa-chart-line"></i> <span>Analytics</span></a>
+                <a href="#" onclick="app.navigateTo('savings')" class="nav-item" data-target="savings"><i class="fa-solid fa-piggy-bank"></i> <span>Savings Vault</span></a>
+                <a href="#" onclick="app.navigateTo('reports')" class="nav-item" data-target="reports"><i class="fa-solid fa-file-invoice"></i> <span>Reports & Export</span></a>
+                <a href="#" onclick="app.navigateTo('goals')" class="nav-item" data-target="goals"><i class="fa-solid fa-flag-checkered"></i> <span>Financial Goals</span></a>
+                <a href="#" onclick="app.navigateTo('accounts')" class="nav-item" data-target="accounts"><i class="fa-solid fa-credit-card"></i> <span>Accounts & Wallets</span></a>
+                <a href="#" onclick="app.navigateTo('shahin')" class="nav-item special-nav" data-target="shahin"><i class="fa-solid fa-car"></i> <span>Shahin Car (Tiba 1)</span></a>
+                <a href="#" onclick="app.navigateTo('ai-assistant')" class="nav-item special-nav" data-target="ai-assistant"><i class="fa-solid fa-brain"></i> <span>Hop AI Advisor</span></a>
+                <a href="#" onclick="app.navigateTo('settings')" class="nav-item" data-target="settings"><i class="fa-solid fa-gear"></i> <span>System Settings</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="pwa-install-btn" class="glass-btn w-100 hidden"><i class="fa-solid fa-download"></i> <span>Install App</span></button>
+            </div>
+        </aside>
+
+        <div class="main-wrapper">
+            <header class="top-bar glass-panel">
+                <div class="top-bar-left">
+                    <span id="current-view-title" class="view-title">Dashboard Overview</span>
+                </div>
+                <div class="top-bar-right">
+                    <button class="glass-btn quick-action-btn" onclick="app.openQuickAdd()"><i class="fa-solid fa-plus"></i> New Transaction</button>
+                    <div class="user-badge glass-panel">
+                        <i class="fa-solid fa-user-shield"></i> <span>Mr. Alavi</span>
+                    </div>
+                </div>
+            </header>
+
+            <main id="view-container" class="view-container">
+                <!-- Dynamically Injected -->
+            </main>
+        </div>
+    </div>
+
+    <div id="modal-root" class="modal-root hidden">
+        <div class="modal-backdrop" onclick="app.closeModal()"></div>
+        <div class="glass-card modal-box" id="modal-box-content"></div>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
