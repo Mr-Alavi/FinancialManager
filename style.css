@@ -1,17 +1,18 @@
-/* تنظیمات پایه - همه چیز اکیدا از چپ شروع شود */
+/* تنظیمات پایه - همه چیز چپ‌چین مطلق */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    text-align: left; /* اعمال چپ‌چین مطلق برای همه متون */
-    direction: ltr; /* جهت چپ به راست حتی برای فارسی */
+    text-align: left;
+    direction: ltr;
 }
 
 body {
     background-color: #050505;
     color: #ffffff;
     overflow-x: hidden;
+    padding: 10px;
 }
 
 /* صفحه ورود */
@@ -38,29 +39,29 @@ body {
 
 .welcome-card {
     padding: 40px;
-    text-align: center; /* فقط متن داخل این کارت وسط باشه تا قشنگ بشینه */
+    text-align: center;
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
 .welcome-card * {
-    text-align: center !important; 
+    text-align: center !important;
 }
 
 .neon-text-upper {
     color: #00e6ff;
     text-shadow: 0 0 10px #00e6ff, 0 0 20px #00e6ff;
-    font-size: 2rem;
+    font-size: 1.8rem;
 }
 
 .white-text-lower {
     color: #ffffff;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: normal;
 }
 
-/* افکت شیشه‌ای مشترک */
+/* افکت شیشه‌ای نئونی */
 .glass-card {
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(10px);
@@ -68,13 +69,15 @@ body {
     border: 1px solid rgba(0, 230, 255, 0.2);
     border-radius: 15px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    margin-bottom: 20px;
 }
 
-/* محتوای اصلی */
 #main-content {
-    padding: 20px;
     opacity: 1;
     transition: opacity 1s ease-in;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .hidden {
@@ -83,7 +86,7 @@ body {
 }
 
 header {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     border-bottom: 2px solid #00e6ff;
     padding-bottom: 10px;
     box-shadow: 0 5px 15px rgba(0, 230, 255, 0.1);
@@ -93,39 +96,115 @@ header h1 {
     color: #00e6ff;
     letter-spacing: 2px;
     text-shadow: 0 0 8px rgba(0, 230, 255, 0.5);
-}
-
-.panel {
-    margin-bottom: 30px;
-    padding: 20px;
+    font-size: 1.8rem;
 }
 
 .panel h2 {
     color: #8a2be2;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     text-shadow: 0 0 5px rgba(138, 43, 226, 0.5);
+    font-size: 1.2rem;
+}
+
+.panel-btns {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .grid-13 {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
 }
 
 .glass-btn {
     background: rgba(255, 255, 255, 0.05);
     color: #fff;
     border: 1px solid rgba(138, 43, 226, 0.4);
-    padding: 15px 10px;
+    padding: 12px 10px;
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 1rem;
+    font-size: 0.95rem;
     backdrop-filter: blur(5px);
+    text-align: left;
 }
 
 .glass-btn:hover {
     background: rgba(138, 43, 226, 0.2);
     border-color: #00e6ff;
     box-shadow: 0 0 10px rgba(0, 230, 255, 0.5);
+}
+
+.special-btn {
+    grid-column: span 2;
+    border-color: #00e6ff;
+}
+
+/* استایل فرم‌ها و نمای داخلی بخش‌ها */
+.section-header {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 15px;
+}
+
+.back-btn {
+    width: fit-content;
+    border-color: #00e6ff;
+    color: #00e6ff;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.form-group label {
+    font-size: 0.9rem;
+    color: #00e6ff;
+}
+
+.form-group input, .form-group select {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(138, 43, 226, 0.5);
+    padding: 10px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
+}
+
+.form-group input:focus, .form-group select:focus {
+    border-color: #00e6ff;
+    box-shadow: 0 0 8px rgba(0,230,255,0.4);
+}
+
+.submit-btn {
+    width: 100%;
+    background: rgba(138, 43, 226, 0.3);
+    border-color: #8a2be2;
+    font-weight: bold;
+    text-align: center !important;
+}
+
+.records-container {
+    margin-top: 25px;
+}
+
+.record-item {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 230, 255, 0.2);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
