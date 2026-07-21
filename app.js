@@ -582,8 +582,18 @@ class FinancialOS {
         }
     }
 
-    viewDashboard(metrics, transactions, vehicleStats, obligations, assets, savings) {
-        const totalAssetVal = AssetEngine.computeTotalAssetValue(assets);
+    viewDashboard() {
+    return `
+        <div style="
+            color:white;
+            font-size:32px;
+            padding:40px;
+            text-align:center;
+        ">
+            ✅ داشبورد تست
+        </div>
+    `;
+    }
         const pendingObs = obligations.filter(o => o.status !== 'پرداخت‌شده');
         const nextObligation = pendingObs.length > 0 ? pendingObs[0] : null;
 
