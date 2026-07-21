@@ -261,16 +261,11 @@ class GoalEngine {
 
 class CalendarEngine {
     static evaluateObligationStatus(dueDateStr) {
-        // Simple day difference estimation based on Jalali/Gregorian string comparison or standard date delta
-        // Returns status object: { status, color, label, daysLeft }
         if (!dueDateStr) return { status: 'normal', color: 'var(--success)', label: 'عالی', daysLeft: 99 };
         
-        // Assuming format YYYY/MM/DD or similar, compute approximate days left
-        // For robustness, we check date delta
         const parts = dueDateStr.split('/');
         if (parts.length !== 3) return { status: 'normal', color: 'var(--success)', label: 'عادی', daysLeft: 30 };
         
-        // Mocking delta or computing standard difference for simulation
         const targetTime = new Date(parts[0], parts[1] - 1, parts[2]).getTime();
         const now = new Date().getTime();
         const diffDays = Math.ceil((targetTime - now) / (1000 * 60 * 60 * 24));
@@ -1007,7 +1002,6 @@ class FinancialOS {
 
         await this.db.add('transactions', { type, amount: amt, category: cat, desc, date });
 
-        // If income, trigger automatic goal income allocation rules
         if (type === 'درآمد') {
             const savingsGoals = await this.db.getAll('savings');
             const goalRules = await this.db.getAll('goalRules');
