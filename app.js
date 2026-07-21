@@ -494,9 +494,12 @@ class FinancialOS {
     }
 
     initPWA() {
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(err => console.log('خطای سرویس ورکر:', err));
-        }
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker
+            .register('sw.js?v=8')
+            .then(() => console.log('Service Worker v8 registered'))
+            .catch(err => console.log('خطای سرویس ورکر:', err));
+    }
     }
 
     async navigateTo(viewId) {
