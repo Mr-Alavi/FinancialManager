@@ -56,10 +56,34 @@ class TRORApp {
                 window.ShahinModule.mount(containerElement);
             }
         }
-        // 3. Default Dashboard / Core Route
+        // 3. Default Dashboard / Core Route (Fixed Fallback to prevent blank/black screen)
         else {
             if (window.DashboardModule && typeof window.DashboardModule.mount === 'function') {
                 window.DashboardModule.mount(containerElement);
+            } else {
+                // Safe Fallback: If no DashboardModule exists, render core dashboard UI or restore container
+                if (containerElement && (!containerElement.innerHTML.trim() || containerElement === document.body)) {
+                    // Check if there is an existing home template or show default dashboard shell
+                    const existingMain = document.getElementById('main-app-content') || document.getElementById('dashboard-view');
+                    if (existingMain) {
+                        containerElement.innerHTML = existingMain.innerHTML;
+                    } else {
+                        // Render standard TROR PFOS luxury dark glassmorphism dashboard placeholder
+                        containerElement.innerHTML = `
+                            <div style="padding: 24px; color: #f8fafc; font-family: inherit;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                                    <h2 style="font-size: 20px; font-weight: bold; background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">سیستم مالی TROR PFOS</h2>
+                                    <button data-route="accounts" style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; padding: 10px 18px; border-radius: 12px; cursor: pointer; font-weight: 500;">مدیریت حساب‌ها</button>
+                                </div>
+                                <div style="background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.08); padding: 24px; border-radius: 16px; backdrop-filter: blur(12px); text-align: center;">
+                                    <div style="font-size: 40px; margin-bottom: 12px;">📊</div>
+                                    <h3 style="font-size: 16px; color: #e2e8f0; margin-bottom: 8px;">خوش آمدید، آقای علوی</h3>
+                                    <p style="color: #94a3b8; font-size: 14px;">سیستم آماده و عملیاتی است. از منوی بالا یا دکمه‌های دسترسی سریع برای ورود به بخش‌ها استفاده کنید.</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
             }
         }
 
