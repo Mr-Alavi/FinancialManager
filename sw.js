@@ -1,58 +1,94 @@
-const CACHE_NAME = 'tror-pfos-enterprise-v7.2';
-const ASSETS = [
-  './index.html',
-  './style.css',
-  './app.js',
-  './manifest.json',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
+/**
+ * TROR PFOS Enterprise Service Worker
+ * Version: tror-pfos-enterprise-v8
+ */
+
+const CACHE_NAME = "tror-pfos-enterprise-v8";
+
+const NETWORK_FIRST_ASSETS = [
+    "./",
+    "./index.html",
+    "./app.js",
+    "./style.css",
+    "./manifest.json"
 ];
 
-self.addEventListener('install', (e) => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
-  );
-  self.skipWaiting();
-});
-
-self.addEventListener('activate', (e) => {
-  e.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) return caches.delete(key);
+// Install Event: Force immediate installation and skip waiting
+self.addEventListener("install", (event) => {
+    self.skipWaiting();
+    event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => {
+            return cache.addAll(NETWORK_FIRST_ASSETS);
         })
-      );
-    })
-  );
-  self.clients.claim();
+    );
 });
 
-self.addEventListener('fetch', (e) => {
-  e.respondWith(
-    caches.match(e.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        fetch(e.request).then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            caches.open(CACHE_NAME).then((cache) => cache.put(e.request, networkResponse));
-          }
-        }).catch(() => {});
-        return cachedResponse;
-      }
-      return fetch(e.request).catch(() => {
-        if (e.request.mode === 'navigate') {
-          return caches.match('./index.html');
-        }
-      });
-    })
-  );
+// Activate Event: Claim clients immediately and purge all outdated caches
+self.addEventListener("activate", (event) => {
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((cacheName) => {
+                    if (cacheName !== CACHE_NAME) {
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
+        }).then(() => {
+            return self.clients.claim();
+        })
+    );
 });
 
-self.addEventListener('sync', (e) => {
-  if (e.tag === 'sync-tror-enterprise') {
-    e.waitUntil(syncEnterpriseCloud());
-  }
+// Fetch Event: Network First strategy for core files, Cache First for static assets
+self.addEventListener("fetch", (event) => {
+    const url = new URL(event.request.url);
+    
+    const isNetworkFirst = NETWORK_FIRST_ASSETS.some(path => 
+        url.pathname.endsWith(path) || url.pathname === path || (path === "./" && url.pathname.endsWith("/"))
+    );
+
+    if (isNetworkFirst) {
+        event.respondWith(
+            fetch(event.request)
+                .then((networkResponse) => {
+                    if (networkResponse && networkResponse.status === 200) {
+                        const responseClone = networkResponse.clone();
+                        caches.open(CACHE_NAME).then((cache) => {
+                            cache.put(event.request, responseClone);
+                        });
+                    }
+                    return networkResponse;
+                })
+                .catch(() => {
+                    return caches.match(event.request);
+                })
+        );
+    } else {
+        event.respondWith(
+            caches.match(event.request).then((cachedResponse) => {
+                if (cachedResponse) {
+                    return cachedResponse;
+                }
+                return fetch(event.request).then((networkResponse) => {
+                    if (networkResponse && networkResponse.status === 200) {
+                        const responseClone = networkResponse.clone();
+                        caches.open(CACHE_NAME).then((cache) => {
+                            cache.put(event.request, responseClone);
+                        });
+                    }
+                    return networkResponse;
+                }).catch(() => {
+                    // Fallback for offline static assets if needed
+                });
+            })
+        );
+    }
 });
 
-async function syncEnterpriseCloud() {
-  console.log('TROR PFOS: Background enterprise sync executed.');
-}
+// Listen for skip waiting message from client
+self.addEventListener("message", (event) => {
+    if (event.data && event.data.type === "SKIP_WAITING") {
+        self.skipWaiting();
+    }
+});
