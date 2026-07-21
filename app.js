@@ -23,11 +23,15 @@ class ThemeManager {
                 '--text-muted': '#64748b'
             }
         };
-        const theme = themes[themeName] || themes['luxury-dark'];
-        const root = document.documentElement;
-        Object.entries(theme).forEach(([prop, val]) => {
-            root.style.setProperty(prop, val);
-        });
+        document.getElementById('tror-update-btn').addEventListener('click', () => {
+    navigator.serviceWorker.getRegistration().then((reg) => {
+        if (reg && reg.waiting) {
+            reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+        }
+        window.location.reload();
+    });
+});
+
         document.body.setAttribute('data-theme', themeName);
         localStorage.setItem('tror_pfos_theme', themeName);
     }
