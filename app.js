@@ -1361,3 +1361,78 @@ class FinancialOS {
 
 const app = new FinancialOS();
 window.addEventListener('DOMContentLoaded', () => app.init());
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').then((registration) => {
+            registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                if (newWorker) {
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            showUpdateNotification(registration);
+                        }
+                    });
+                }
+            });
+
+            let refreshing = false;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (!refreshing) {
+                    refreshing = true;
+                    window.location.reload();
+                }
+            });
+        }).catch((err) => {
+            console.error('Service Worker registration failed:', err);
+        });
+    });
+}
+
+function showUpdateNotification(registration) {
+    if (document.getElementById('tror-update-notification')) return;
+
+    const notif = document.createElement('div');
+    notif.id = 'tror-update-notification';
+    notif.style.cssText = `
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: rgba(13, 17, 23, 0.95);
+        border: 1px solid rgba(56, 139, 252, 0.4);
+        color: #c9d1d9;
+        padding: 16px 20px;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        z-index: 10000;
+        font-family: inherit;
+        backdrop-filter: blur(12px);
+        direction: rtl;
+    `;
+    notif.innerHTML = `
+        <span style="font-size: 14px; font-weight: 500;">نسخه جدید آماده است</span>
+        <button id="tror-update-btn" style="
+            background: #238636;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: background 0.2s;
+        ">بروزرسانی</button>
+    `;
+
+    document.body.appendChild(notif);
+
+    document.getElementById('tror-update-btn').addEventListener('click', () => {
+        if (registration.waiting) {
+            registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+        }
+        window.location.reload();
+    });
+}
+
