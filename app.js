@@ -31,7 +31,6 @@ class ThemeManager {
         window.location.reload();
     });
 });
-
         document.body.setAttribute('data-theme', themeName);
         localStorage.setItem('tror_pfos_theme', themeName);
     }
