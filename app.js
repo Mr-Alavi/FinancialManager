@@ -1427,9 +1427,8 @@ function showUpdateNotification(registration) {
     document.body.appendChild(notif);
 
     document.getElementById('tror-update-btn').addEventListener('click', () => {
-        if (registration.waiting) {
-            registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-        }
-    
-    });
-}
+    if (registration && registration.waiting) {
+        registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+    }
+    window.location.reload();
+});
