@@ -2,7 +2,63 @@
  * TROR Personal Financial Operating System - Enterprise Core Architecture v3.0
  * Fully upgraded with 5 Major Systems: Smart Goals & Auto-Allocation, 
  * Financial Intelligence, Future Financial Calendar, Complete Asset Management, and Gemini AI Layer.
+ * Enhanced with modular System Settings (Themes, Localization, Multi-Currency).
  */
+
+class ThemeManager {
+    static applyTheme(themeName) {
+        const themes = {
+            'luxury-dark': {
+                '--bg-color': '#050505',
+                '--card-bg': 'rgba(16, 16, 26, 0.68)',
+                '--card-border': 'rgba(138, 43, 226, 0.28)',
+                '--text-main': '#f8f9fa',
+                '--text-muted': '#94a3b8'
+            },
+            'luxury-light': {
+                '--bg-color': '#f0f2f5',
+                '--card-bg': 'rgba(255, 255, 255, 0.85)',
+                '--card-border': 'rgba(138, 43, 226, 0.2)',
+                '--text-main': '#1a1a1a',
+                '--text-muted': '#64748b'
+            }
+        };
+        const theme = themes[themeName] || themes['luxury-dark'];
+        const root = document.documentElement;
+        Object.entries(theme).forEach(([prop, val]) => {
+            root.style.setProperty(prop, val);
+        });
+        document.body.setAttribute('data-theme', themeName);
+        localStorage.setItem('tror_pfos_theme', themeName);
+    }
+}
+
+class LocalizationManager {
+    constructor() {
+        this.dictionary = {
+            fa: {
+                settings_title: "تنظیمات سیستم و امنیت محلی",
+                label_theme: "قالب ظاهری (Theme)",
+                label_language: "زبان سیستم (Language)",
+                label_currency: "واحد پول (Currency)",
+                save_settings: "ذخیره تنظیمات عمومی",
+                saved_success: "تنظیمات با موفقیت ذخیره و اعمال شد."
+            },
+            en: {
+                settings_title: "System Settings & Local Security",
+                label_theme: "Visual Theme",
+                label_language: "System Language",
+                label_currency: "Default Currency",
+                save_settings: "Save General Settings",
+                saved_success: "Settings saved and applied successfully."
+            }
+        };
+    }
+    t(key, lang = 'fa') {
+        return this.dictionary[lang]?.[key] || this.dictionary['fa'][key] || key;
+    }
+}
+const locManager = new LocalizationManager();
 
 class DatabaseManager {
     constructor() {
@@ -262,10 +318,8 @@ class GoalEngine {
 class CalendarEngine {
     static evaluateObligationStatus(dueDateStr) {
         if (!dueDateStr) return { status: 'normal', color: 'var(--success)', label: 'عالی', daysLeft: 99 };
-        
         const parts = dueDateStr.split('/');
         if (parts.length !== 3) return { status: 'normal', color: 'var(--success)', label: 'عادی', daysLeft: 30 };
-        
         const targetTime = new Date(parts[0], parts[1] - 1, parts[2]).getTime();
         const now = new Date().getTime();
         const diffDays = Math.ceil((targetTime - now) / (1000 * 60 * 60 * 24));
@@ -401,6 +455,13 @@ class FinancialOS {
 
     async init() {
         await this.db.init();
+        
+        // Load initial theme
+        const settingsList = await this.db.getAll('settings');
+        if (settingsList && settingsList.length > 0) {
+            if (settingsList[0].theme) ThemeManager.applyTheme(settingsList[0].theme);
+        }
+
         setTimeout(async () => {
             const splash = document.getElementById('splash-screen');
             if (splash) splash.style.display = 'none';
@@ -621,7 +682,6 @@ class FinancialOS {
                 </div>
             </div>
 
-            <!-- Active Goal Allocation Rules Summary -->
             <div class="glass-card" style="margin-bottom: 20px;">
                 <h4 style="color: var(--neon-purple); margin-bottom: 12px;"><i class="fa-solid fa-percent"></i> قوانین فعلی تخصیص خودکار درآمد</h4>
                 ${goalRules.length === 0 ? '<p style="color: var(--text-muted); font-size:0.9rem;">هیچ قانون تخصیصی تعریف نشده است. به هنگام ثبت درآمد، مبالغ به‌طور خودکار توزیع نخواهند شد.</p>' : `
@@ -767,7 +827,6 @@ class FinancialOS {
                 <button class="glass-btn" onclick="app.openAddVehicleLog()"><i class="fa-solid fa-wrench"></i> ثبت سرویس و تعمیر جدید</button>
             </div>
 
-            <!-- Smart Maintenance Status Foundation Grid -->
             <div class="glass-card" style="margin-bottom: 20px;">
                 <h3 style="color: var(--neon-purple); margin-bottom: 16px;"><i class="fa-solid fa-shield-halved"></i> سیستم پایش هوشمند قطعات و سرویس‌ها</h3>
                 ${maintenanceRecords.length === 0 ? '<p style="color: var(--text-muted); font-size: 0.9rem;">هیچ قطعه یا سرویسی با پایش هوشمند ثبت نشده است.</p>' : `
@@ -899,18 +958,24 @@ class FinancialOS {
                         <label style="display:block; margin-bottom:6px; color:var(--text-muted);">قالب ظاهری (Theme)</label>
                         <select id="setting-theme" style="width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff;">
                             <option value="luxury-dark" ${currentSetting.theme === 'luxury-dark' ? 'selected' : ''}>حالت تاریک لوکس (Luxury Dark)</option>
+                            <option value="luxury-light" ${currentSetting.theme === 'luxury-light' ? 'selected' : ''}>حالت روشن لوکس (Luxury Light)</option>
                         </select>
                     </div>
                     <div>
                         <label style="display:block; margin-bottom:6px; color:var(--text-muted);">زبان سیستم (Language)</label>
                         <select id="setting-lang" style="width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff;">
                             <option value="fa" ${currentSetting.language === 'fa' ? 'selected' : ''}>فارسی (Persian)</option>
+                            <option value="en" ${currentSetting.language === 'en' ? 'selected' : ''}>English</option>
                         </select>
                     </div>
                     <div>
-                        <label style="display:block; margin-bottom:6px; color:var(--text-muted);">واحد پول (Currency)</label>
+                        <label style="display:block; margin-bottom:6px; color:var(--text-muted);">واحد پول پیش‌فرض (Currency)</label>
                         <select id="setting-currency" style="width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff;">
                             <option value="تومان" ${currentSetting.currency === 'تومان' ? 'selected' : ''}>تومان (Toman)</option>
+                            <option value="ریال" ${currentSetting.currency === 'ریال' ? 'selected' : ''}>ریال (Rial)</option>
+                            <option value="Dollar" ${currentSetting.currency === 'Dollar' ? 'selected' : ''}>Dollar ($)</option>
+                            <option value="Euro" ${currentSetting.currency === 'Euro' ? 'selected' : ''}>Euro (€)</option>
+                            <option value="USDT" ${currentSetting.currency === 'USDT' ? 'selected' : ''}>USDT</option>
                         </select>
                     </div>
                     <button type="submit" class="glass-btn" style="margin-top: 10px; justify-content:center;"><i class="fa-solid fa-floppy-disk"></i> ذخیره تنظیمات عمومی</button>
@@ -937,6 +1002,10 @@ class FinancialOS {
         const theme = document.getElementById('setting-theme')?.value || 'luxury-dark';
         const language = document.getElementById('setting-lang')?.value || 'fa';
         const currency = document.getElementById('setting-currency')?.value || 'تومان';
+        
+        // Apply theme instantly without reload
+        ThemeManager.applyTheme(theme);
+
         const settingsList = await this.db.getAll('settings');
         let settingRecord = (settingsList && settingsList.length > 0) ? settingsList[0] : { id: 'set_1', pin: '1234' };
         settingRecord.theme = theme;
@@ -947,7 +1016,7 @@ class FinancialOS {
         } else {
             await this.db.add('settings', settingRecord);
         }
-        alert('تنظیمات با موفقیت ذخیره شد.');
+        alert('تنظیمات با موفقیت ذخیره و اعمال شد.');
         this.navigateTo('settings');
     }
 
