@@ -5,11 +5,6 @@
  * Enhanced with modular System Settings (Themes, Localization, Multi-Currency).
  */
 // پاکسازی اضطراری سرویس‌ورکر برای توقف چرخه رفرش
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then((registrations) => {
-        registrations.forEach((reg) => reg.unregister());
-    });
-}
 class ThemeManager {
     static applyTheme(themeName) {
         const themes = {
