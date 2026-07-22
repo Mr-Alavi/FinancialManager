@@ -1,11 +1,11 @@
 /**
- * TROR PFOS Enterprise Service Worker
- * Version: tror-pfos-enterprise-v8
+ * TROR PFOS Enterprise Service Worker v8
+ * Cache Busting, Network First for core assets, Cache First for static assets.
  */
 
 const CACHE_NAME = "tror-pfos-enterprise-v8";
 
-const NETWORK_FIRST_ASSETS = [
+const CORE_ASSETS = [
     "./",
     "./index.html",
     "./app.js",
@@ -13,17 +13,17 @@ const NETWORK_FIRST_ASSETS = [
     "./manifest.json"
 ];
 
-// Install Event: Force immediate installation and skip waiting
+// Install Event: Skip waiting immediately
 self.addEventListener("install", (event) => {
-    self.skipWaiting();
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(NETWORK_FIRST_ASSETS);
+            return cache.addAll(CORE_ASSETS);
         })
     );
+    self.skipWaiting();
 });
 
-// Activate Event: Claim clients immediately and purge all outdated caches
+// Activate Event: Claim clients and delete all old caches
 self.addEventListener("activate", (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
@@ -40,15 +40,21 @@ self.addEventListener("activate", (event) => {
     );
 });
 
-// Fetch Event: Network First strategy for core files, Cache First for static assets
+// Fetch Event: Network First for core assets, Cache First for static files
 self.addEventListener("fetch", (event) => {
     const url = new URL(event.request.url);
-    
-    const isNetworkFirst = NETWORK_FIRST_ASSETS.some(path => 
-        url.pathname.endsWith(path) || url.pathname === path || (path === "./" && url.pathname.endsWith("/"))
-    );
 
-    if (isNetworkFirst) {
+    // Skip non-GET requests
+    if (event.request.method !== "GET") return;
+
+    // Check if it's a core asset or HTML/JS/CSS/Manifest (Network First)
+    const isCoreAsset = CORE_ASSETS.some(asset => url.pathname.endsWith(asset.replace('./', ''))) || 
+                        url.pathname.endsWith(".html") || 
+                        url.pathname.endsWith(".js") || 
+                        url.pathname.endsWith(".css") ||
+                        url.pathname.endsWith(".json");
+
+    if (isCoreAsset) {
         event.respondWith(
             fetch(event.request)
                 .then((networkResponse) => {
@@ -61,10 +67,19 @@ self.addEventListener("fetch", (event) => {
                     return networkResponse;
                 })
                 .catch(() => {
-                    return caches.match(event.request);
+                    return caches.match(event.request).then((cachedResponse) => {
+                        if (cachedResponse) {
+                            return cachedResponse;
+                        }
+                        // Fallback to index.html for SPA routing if offline
+                        if (event.request.mode === 'navigate') {
+                            return caches.match('./index.html');
+                        }
+                    });
                 })
         );
     } else {
+        // Cache First strategy for static assets (icons, fonts, images)
         event.respondWith(
             caches.match(event.request).then((cachedResponse) => {
                 if (cachedResponse) {
@@ -79,19 +94,9 @@ self.addEventListener("fetch", (event) => {
                     }
                     return networkResponse;
                 }).catch(() => {
-                    // Fallback for offline static assets if needed
+                    // Fail silently or return fallback if needed
                 });
             })
         );
     }
-});
-
-// Listen for skip waiting message from client
-self.addEventListener("message", (event) => {
-    if (event.data && event.data.type === "SKIP_WAITING") {
-        self.skipWaiting();
-    }
-});
-self.addEventListener('activate', (event) => {
-    event.waitUntil(self.clients.claim());
 });
