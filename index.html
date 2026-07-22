@@ -1,102 +1,38 @@
-/**
- * TROR PFOS Enterprise Service Worker v8
- * Cache Busting, Network First for core assets, Cache First for static assets.
- */
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سیستم عامل مالی شخصی TROR (PFOS)</title>
+    
+    <!-- PWA Manifest with Cache Busting -->
+    <link rel="manifest" href="manifest.json?v=8">
+    <meta name="theme-color" content="#0d1117">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TROR PFOS">
 
-const CACHE_NAME = "tror-pfos-enterprise-v8";
+    <!-- Stylesheet with Cache Busting -->
+    <link rel="stylesheet" href="style.css?v=8">
+</head>
+<body>
+    <!-- App Container -->
+    <div id="app">
+        <!-- Splash / Loading Screen -->
+        <div id="splash-screen" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#0d1117;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999;color:#58a6ff;font-family:Tahoma,sans-serif;">
+            <div class="spinner" style="width:50px;height:50px;border:3px solid rgba(88,166,255,0.3);border-radius:50%;border-top-color:#58a6ff;animation:spin 1s ease-in-out infinite;"></div>
+            <h2 style="margin-top:20px;font-size:18px;letter-spacing:1px;">T . R . O . R | PFOS v3.0</h2>
+        </div>
+    </div>
 
-const CORE_ASSETS = [
-    "./",
-    "./index.html",
-    "./app.js",
-    "./style.css",
-    "./manifest.json"
-];
+    <style>
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
 
-// Install Event: Skip waiting immediately
-self.addEventListener("install", (event) => {
-    event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(CORE_ASSETS);
-        })
-    );
-    self.skipWaiting();
-});
-
-// Activate Event: Claim clients and delete all old caches
-self.addEventListener("activate", (event) => {
-    event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((cacheName) => {
-                    if (cacheName !== CACHE_NAME) {
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
-        }).then(() => {
-            return self.clients.claim();
-        })
-    );
-});
-
-// Fetch Event: Network First for core assets, Cache First for static files
-self.addEventListener("fetch", (event) => {
-    const url = new URL(event.request.url);
-
-    // Skip non-GET requests
-    if (event.request.method !== "GET") return;
-
-    // Check if it's a core asset or HTML/JS/CSS/Manifest (Network First)
-    const isCoreAsset = CORE_ASSETS.some(asset => url.pathname.endsWith(asset.replace('./', ''))) || 
-                        url.pathname.endsWith(".html") || 
-                        url.pathname.endsWith(".js") || 
-                        url.pathname.endsWith(".css") ||
-                        url.pathname.endsWith(".json");
-
-    if (isCoreAsset) {
-        event.respondWith(
-            fetch(event.request)
-                .then((networkResponse) => {
-                    if (networkResponse && networkResponse.status === 200) {
-                        const responseClone = networkResponse.clone();
-                        caches.open(CACHE_NAME).then((cache) => {
-                            cache.put(event.request, responseClone);
-                        });
-                    }
-                    return networkResponse;
-                })
-                .catch(() => {
-                    return caches.match(event.request).then((cachedResponse) => {
-                        if (cachedResponse) {
-                            return cachedResponse;
-                        }
-                        // Fallback to index.html for SPA routing if offline
-                        if (event.request.mode === 'navigate') {
-                            return caches.match('./index.html');
-                        }
-                    });
-                })
-        );
-    } else {
-        // Cache First strategy for static assets (icons, fonts, images)
-        event.respondWith(
-            caches.match(event.request).then((cachedResponse) => {
-                if (cachedResponse) {
-                    return cachedResponse;
-                }
-                return fetch(event.request).then((networkResponse) => {
-                    if (networkResponse && networkResponse.status === 200) {
-                        const responseClone = networkResponse.clone();
-                        caches.open(CACHE_NAME).then((cache) => {
-                            cache.put(event.request, responseClone);
-                        });
-                    }
-                    return networkResponse;
-                }).catch(() => {
-                    // Fail silently or return fallback if needed
-                });
-            })
-        );
-    }
-});
+    <!-- Main Application Script with Cache Busting -->
+    <script src="app.js?v=8"></script>
+</body>
+</html>
+ب
