@@ -1,24 +1,64 @@
-{
-  "name": "TROR Personal Financial Operating System",
-  "short_name": "TROR PFOS",
-  "start_url": "./index.html",
-  "display": "standalone",
-  "background_color": "#050505",
-  "theme_color": "#8a2be2",
-  "description": "Enterprise-Grade Personal Financial & Vehicle Operating System",
-  "orientation": "any",
-  "icons": [
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ]
-}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TROR PFOS - سیستم مدیریت مالی و عملیاتی</title>
+    
+    <!-- PWA Manifest & Theme -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#8a2be2">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- Global Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app-container">
+        <!-- هدر و بخش بالایی اپلیکیشن -->
+        <header class="app-header">
+            <div class="logo-area">
+                <h1>TROR PFOS</h1>
+            </div>
+            <div id="header-actions">
+                <!-- ابزارک‌ها و دکمه‌های کنترلی سراسری -->
+            </div>
+        </header>
+
+        <!-- محتوای اصلی که به صورت داینامیک توسط ماژول‌ها بارگذاری می‌شود -->
+        <main id="main-content" class="content-area">
+            <!-- لودینگ اولیه یا محتوای پیش‌فرض داشبورد -->
+            <div class="loading-spinner">در حال بارگذاری سیستم...</div>
+        </main>
+
+        <!-- نوار ناوبری پایین / منوی اصلی -->
+        <nav id="bottom-navigation" class="app-nav">
+            <!-- لینک‌های دسترسی سریع به ماژول‌ها -->
+        </nav>
+    </div>
+
+    <!-- هسته مرکزی مدیریت تم و دیتابیس -->
+    <script src="themes.js"></script>
+    <script src="database.js"></script>
+    <script src="localization.js"></script>
+
+    <!-- اسکریپت اصلی ارکستراسیون ماژول‌ها -->
+    <script src="app.js" defer></script>
+
+    <!-- ثبت سرویس ورکر (Service Worker) برای حالت آفلاین و PWA -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
