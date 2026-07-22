@@ -1,90 +1,28 @@
 <!DOCTYPE html>
-<html lang="fa" dir="ltr">
+<html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TROR - سیستم عامل مالی شخصی (PFOS)</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0F172A">
+    <title>مدیریت مالی | T.R.O.R</title>
+    
+    <link rel="manifest" href="./manifest.json">
+    <link rel="apple-touch-icon" href="./assets/icons/icon-192x192.png">
+    
+    <!-- CSS Styles -->
+    <link rel="stylesheet" href="./css/variables.css">
+    <link rel="stylesheet" href="./themes/dark.css" id="theme-style">
+    <link rel="stylesheet" href="./css/global.css">
 </head>
 <body>
-
-    <div class="ambient-mesh"></div>
-
-    <!-- Splash Screen -->
-    <div id="splash-screen">
-        <div class="glass-card splash-content">
-            <h1 class="neon-title">T . R . O . R</h1>
-            <p class="sub-title">سیستم عامل مالی شخصی PFOS</p>
-            <div class="splash-loader"><span></span></div>
-        </div>
+    <div id="app">
+        <!-- Main Layout & Router Container -->
+        <header id="app-header"></header>
+        <main id="app-main"></main>
+        <nav id="app-bottom-nav"></nav>
     </div>
 
-    <!-- Security Lock Screen -->
-    <div id="security-lock-screen" class="hidden">
-        <div class="glass-card" style="padding: 40px; text-align: center; width: 100%; max-width: 400px;">
-            <i class="fa-solid fa-shield-halved" style="font-size: 3rem; color: var(--neon-blue); margin-bottom: 20px;"></i>
-            <h2 style="margin-bottom: 10px; color: #fff;">سیستم قفل است</h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 25px;">پین امنیتی را برای دسترسی به TROR PFOS وارد کنید</p>
-            <div class="form-group">
-                <input type="password" id="unlock-pin" placeholder="پین امنیتی" style="text-align: center; letter-spacing: 5px; font-size: 1.2rem;" onkeydown="if(event.key==='Enter') app.verifyPin()">
-            </div>
-            <button class="glass-btn w-100" style="justify-content: center; margin-top: 10px;" onclick="app.verifyPin()"><i class="fa-solid fa-lock-open"></i> باز کردن قفل سیستم</button>
-        </div>
-    </div>
-
-    <!-- App Shell -->
-    <div id="app-shell" class="hidden">
-        <aside id="sidebar" class="sidebar">
-            <div class="sidebar-header">
-                <h2>T . R . O . R</h2>
-            </div>
-            <div class="sidebar-search">
-                <input type="text" id="global-search-input" placeholder="جستجو در سیستم..." oninput="app.handleGlobalSearch(this.value)">
-            </div>
-            <nav class="sidebar-nav">
-                <a href="#" onclick="app.navigateTo('dashboard')" class="nav-item active" data-target="dashboard"><i class="fa-solid fa-chart-pie"></i> <span>داشبورد</span></a>
-                <a href="#" onclick="app.navigateTo('transactions')" class="nav-item" data-target="transactions"><i class="fa-solid fa-right-left"></i> <span>تراکنش‌ها</span></a>
-                <a href="#" onclick="app.navigateTo('budget')" class="nav-item" data-target="budget"><i class="fa-solid fa-bullseye"></i> <span>کنترل بودجه</span></a>
-                <a href="#" onclick="app.navigateTo('analysis')" class="nav-item" data-target="analysis"><i class="fa-solid fa-chart-line"></i> <span>تحلیل و آمار</span></a>
-                <a href="#" onclick="app.navigateTo('savings')" class="nav-item" data-target="savings"><i class="fa-solid fa-piggy-bank"></i> <span>صندوق پس‌انداز</span></a>
-                <a href="#" onclick="app.navigateTo('reports')" class="nav-item" data-target="reports"><i class="fa-solid fa-file-invoice"></i> <span>گزارش‌ها و خروجی</span></a>
-                <a href="#" onclick="app.navigateTo('goals')" class="nav-item" data-target="goals"><i class="fa-solid fa-flag-checkered"></i> <span>اهداف مالی</span></a>
-                <a href="#" onclick="app.navigateTo('accounts')" class="nav-item" data-target="accounts"><i class="fa-solid fa-credit-card"></i> <span>حساب‌ها و کیف پول‌ها</span></a>
-                <a href="#" onclick="app.navigateTo('shahin')" class="nav-item special-nav" data-target="shahin"><i class="fa-solid fa-car"></i> <span>خودروی Shahin (Tiba 1)</span></a>
-                <a href="#" onclick="app.navigateTo('ai-assistant')" class="nav-item special-nav" data-target="ai-assistant"><i class="fa-solid fa-brain"></i> <span>مشاور هوشمند Hop AI</span></a>
-                <a href="#" onclick="app.navigateTo('settings')" class="nav-item" data-target="settings"><i class="fa-solid fa-gear"></i> <span>تنظیمات سیستم</span></a>
-            </nav>
-            <div class="sidebar-footer">
-                <button id="pwa-install-btn" class="glass-btn w-100 hidden"><i class="fa-solid fa-download"></i> <span>نصب برنامه</span></button>
-            </div>
-        </aside>
-
-        <div class="main-wrapper">
-            <header class="top-bar glass-panel">
-                <div class="top-bar-left">
-                    <span id="current-view-title" class="view-title">نمای کلی داشبورد</span>
-                </div>
-                <div class="top-bar-right">
-                    <button class="glass-btn quick-action-btn" onclick="app.openQuickAdd()"><i class="fa-solid fa-plus"></i> تراکنش جدید</button>
-                    <div class="user-badge glass-panel">
-                        <i class="fa-solid fa-user-shield"></i> <span>Mr Alavi</span>
-                    </div>
-                </div>
-            </header>
-
-            <main id="view-container" class="view-container">
-                <!-- Dynamically Injected -->
-            </main>
-        </div>
-    </div>
-
-    <div id="modal-root" class="modal-root hidden">
-        <div class="modal-backdrop" onclick="app.closeModal()"></div>
-        <div class="glass-card modal-box" id="modal-box-content"></div>
-    </div>
-
-    <script src="app.js"></script>
+    <!-- Application Script -->
+    <script type="module" src="./js/app.js"></script>
 </body>
 </html>
