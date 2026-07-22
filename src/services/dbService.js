@@ -1,4 +1,3 @@
-```javascript
 /**
  * src/services/dbService.js
  * IndexedDB service layer encapsulating TROR_Database operations.
@@ -15,7 +14,8 @@ const STORES = [
     'maintenance',
     'assets',
     'obligations',
-    'savings'
+    'savings',
+    'budgets'
 ];
 
 let dbInstance = null;
@@ -39,8 +39,13 @@ export function openDB() {
 
         request.onupgradeneeded = (event) => {
             const db = event.target.result;
+
             STORES.forEach(storeName => {
-                db.createObjectStore(storeName, { keyPath: 'id', autoIncrement: true });
+                if (!db.objectStoreNames.contains(storeName)) {
+                    db.createObjectStore(storeName, {
+                        keyPath: 'id',
+                        autoIncrement: true
+                    });
                 }
             });
         };
@@ -120,11 +125,15 @@ export async function softDelete(storeName, id) {
 
         getRequest.onsuccess = () => {
             const record = getRequest.result;
+
             if (!record) {
                 return reject(new Error(`Record with id ${id} not found in ${storeName}`));
             }
+
             record.deleted = true;
+
             const putRequest = store.put(record);
+
             putRequest.onsuccess = () => resolve(putRequest.result);
             putRequest.onerror = () => reject(putRequest.error);
         };
@@ -135,6 +144,7 @@ export async function softDelete(storeName, id) {
 
 export async function clear(storeName) {
     const db = await openDB();
+
     return new Promise((resolve, reject) => {
         const transaction = db.transaction(storeName, 'readwrite');
         const store = transaction.objectStore(storeName);
@@ -181,8 +191,6 @@ export async function importData(backupData) {
             });
         }
     }
-    return true;
-}
 
-```
-0
+    return true;
+                }
