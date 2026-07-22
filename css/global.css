@@ -1,0 +1,42 @@
+/* Reset & Base Styles */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Vazirmatn', sans-serif, system-ui;
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  font-size: var(--font-size-body);
+  line-height: 1.5;
+  min-height: 100vh;
+  direction: rtl;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar Customization */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: var(--radius-full);
+}
+
+/* Selection */
+::selection {
+  background-color: var(--color-primary);
+  color: #ffffff;
+}
+
+/* Utility Classes */
+.ltr-text {
+  direction: ltr;
+  unicode-bidi: embed;
+}
