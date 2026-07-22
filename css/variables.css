@@ -1,0 +1,50 @@
+:root {
+  /* Core Brand & State Colors */
+  --color-primary: #3B82F6;
+  --color-success: #22C55E;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
+
+  /* Financial Color System */
+  --fin-income: #22C55E;
+  --fin-expense: #EF4444;
+  --fin-transfer: #3B82F6;
+  --fin-saving: #06B6D4;
+  --fin-investment: #8B5CF6;
+  --fin-debt: #F97316;
+  --fin-receivable: #EAB308;
+
+  /* Spacing Scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.2);
+
+  /* Typography Sizes */
+  --font-size-display: 24px;
+  --font-size-h2: 20px;
+  --font-size-h3: 16px;
+  --font-size-body-lg: 15px;
+  --font-size-body: 14px;
+  --font-size-caption: 12px;
+
+  /* Animation Timings */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
