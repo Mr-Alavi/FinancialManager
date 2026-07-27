@@ -1,3 +1,4 @@
+// app.js
 /**
  * TROR Personal Financial Operating System - UI Controller & Application Orchestrator
  * Handles FinancialOS class, view rendering, modals, user interactions, and app initialization.
@@ -220,57 +221,9 @@ class FinancialOS {
         `;
     }
 
-    viewGoals(savings, goalRules) {
-        return `
-            <div class="glass-card" style="margin-bottom: 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-                <div>
-                    <h3 style="color: var(--neon-blue);">سیستم هوشمند اهداف مالی و تخصیص خودکار درآمد</h3>
-                    <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 4px;">تعریف اهداف و قوانین تخصیص خودکار درصد درآمد (تجهیزات، صندوق اضطراری و غیره)</p>
-                </div>
-                <div style="display:flex; gap:10px;">
-                    <button class="glass-btn" onclick="app.openAddGoalRule()"><i class="fa-solid fa-sliders"></i> تنظیم قوانین تخصیص</button>
-                    <button class="glass-btn" onclick="app.openAddSavingsGoal()"><i class="fa-solid fa-plus"></i> هدف جدید</button>
-                </div>
-            </div>
-
-            <!-- Active Goal Allocation Rules Summary -->
-            <div class="glass-card" style="margin-bottom: 20px;">
-                <h4 style="color: var(--neon-purple); margin-bottom: 12px;"><i class="fa-solid fa-percent"></i> قوانین فعلی تخصیص خودکار درآمد</h4>
-                ${goalRules.length === 0 ? '<p style="color: var(--text-muted); font-size:0.9rem;">هیچ قانون تخصیصی تعریف نشده است. به هنگام ثبت درآمد، مبالغ به‌طور خودکار توزیع نخواهند شد.</p>' : `
-                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                    ${goalRules.map(r => {
-                        const targetG = savings.find(s => s.id === r.goalId);
-                        return `
-                            <div class="glass-card" style="padding: 12px 18px; border: 1px solid var(--neon-blue);">
-                                <span style="font-weight: bold; color: #fff;">${targetG ? targetG.name : 'هدف'}</span>: 
-                                <span style="color: var(--neon-blue); font-weight: bold;">${r.percentage}%</span>
-                            </div>
-                        `;
-                    }).join('')}
-                </div>`}
-            </div>
-
-            ${savings.length === 0 ? '<div class="glass-card"><p style="color: var(--text-muted);">هیچ هدف پس‌اندازی تعریف نشده است.</p></div>' : `
-            <div class="metrics-grid">
-                ${savings.map(g => {
-                    const pct = g.target > 0 ? Math.min(100, ((g.current / g.target) * 100)).toFixed(1) : 0;
-                    return `
-                        <div class="glass-card metric-card">
-                            <h4>${g.name}</h4>
-                            <div class="value" style="font-size: 1.25rem; margin: 10px 0;">${Number(g.current).toLocaleString()} / ${Number(g.target).toLocaleString()} تومان</div>
-                            <p style="color: var(--neon-blue); font-size: 0.85rem; margin-bottom: 6px;">پیشرفت: ${pct}%</p>
-                            <div style="background: rgba(255,255,255,0.05); height: 6px; border-radius: 4px; overflow: hidden; margin-bottom: 12px;">
-                                <div style="background: var(--neon-blue); height: 100%; width: ${pct}%;"></div>
-                            </div>
-                            <div style="display: flex; gap: 8px;">
-                                <button class="glass-btn" style="flex:1; padding:6px; font-size:0.8rem; justify-content:center;" onclick="app.depositSavings('${g.id}')">واریز</button>
-                                <button class="glass-btn" style="flex:1; padding:6px; font-size:0.8rem; justify-content:center; border-color:var(--danger);" onclick="app.withdrawSavings('${g.id}')">برداشت</button>
-                            </div>
-                        </div>
-                    `;
-                }).join('')}
-            </div>`}
-        `;
+    async viewGoals(savings, goalRules) {
+        const response = await fetch('features/goals/goals.html');
+        return await response.text();
     }
 
     viewAnalysis(metrics, transactions, savings, vehicleLogs) {
@@ -501,47 +454,8 @@ class FinancialOS {
     }
 
     async viewSettings() {
-        const settingsList = await this.db.getAll('settings');
-        const currentSetting = (settingsList && settingsList.length > 0) ? settingsList[0] : { theme: 'luxury-dark', language: 'fa', currency: 'تومان' };
-        return `
-            <div class="glass-card" style="margin-bottom: 20px;">
-                <h3 style="color: var(--neon-blue); margin-bottom: 15px;">تنظیمات سیستم و امنیت محلی</h3>
-                <form onsubmit="app.saveAppSettings(event)" class="form-group" style="max-width:400px; display:flex; flex-direction:column; gap:12px;">
-                    <div>
-                        <label style="display:block; margin-bottom:6px; color:var(--text-muted);">قالب ظاهری (Theme)</label>
-                        <select id="setting-theme" style="width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff;">
-                            <option value="luxury-dark" ${currentSetting.theme === 'luxury-dark' ? 'selected' : ''}>حالت تاریک لوکس (Luxury Dark)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label style="display:block; margin-bottom:6px; color:var(--text-muted);">زبان سیستم (Language)</label>
-                        <select id="setting-lang" style="width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff;">
-                            <option value="fa" ${currentSetting.language === 'fa' ? 'selected' : ''}>فارسی (Persian)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label style="display:block; margin-bottom:6px; color:var(--text-muted);">واحد پول (Currency)</label>
-                        <select id="setting-currency" style="width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff;">
-                            <option value="تومان" ${currentSetting.currency === 'تومان' ? 'selected' : ''}>تومان (Toman)</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="glass-btn" style="margin-top: 10px; justify-content:center;"><i class="fa-solid fa-floppy-disk"></i> ذخیره تنظیمات عمومی</button>
-                </form>
-            </div>
-            <div class="glass-card" style="margin-bottom: 20px;">
-                <h3 style="color: var(--neon-blue); margin-bottom: 15px;">امنیت و پین سیستم</h3>
-                <form onsubmit="app.updatePin(event)" class="form-group" style="max-width:350px;">
-                    <label style="display:block; margin-bottom:6px; color:var(--text-muted);">تغییر رمز PIN امنیتی</label>
-                    <input type="password" id="new-pin-val" placeholder="رمز جدید حداقل 4 رقمی" required style="width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#fff;">
-                    <button type="submit" class="glass-btn" style="margin-top: 10px; justify-content:center;"><i class="fa-solid fa-key"></i> ذخیره رمز جدید</button>
-                </form>
-            </div>
-            <div class="glass-card" style="border-color: rgba(255,77,77,0.4);">
-                <h3 style="color: var(--danger); margin-bottom: 10px;">مدیریت داده‌های TROR</h3>
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px;">بازنشانی کامل داده‌های برنامه باعث پاکسازی اطلاعات TROR و بازگشت به حالت اولیه می‌شود.</p>
-                <button class="glass-btn" style="background: rgba(255,77,77,0.2); border-color: var(--danger); color: #fff;" onclick="app.resetDataSystem()"><i class="fa-solid fa-triangle-exclamation"></i> بازنشانی کامل داده‌های برنامه</button>
-            </div>
-        `; 
+        const response = await fetch('features/settings/settings.html');
+        return await response.text();
     }
 
     async saveAppSettings(e) {
