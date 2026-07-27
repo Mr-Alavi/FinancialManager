@@ -1,0 +1,23 @@
+<section id="goals-module" class="pfos-module-container">
+    <div class="module-header">
+        <h2>مدیریت اهداف مالی هوشمند</h2>
+        <p>تخصیص خودکار درآمد و پیگیری پیشرفت اهداف</p>
+    </div>
+
+    <!-- اکشن‌ها و دکمه افزودن هدف -->
+    <div class="module-actions">
+        <button id="open-new-goal-modal" class="btn-primary">افزودن هدف جدید</button>
+        <button id="run-auto-allocation" class="btn-secondary">اجرای تخصیص خودکار درآمد</button>
+    </div>
+
+    <!-- وضعیت خالی (Empty State) -->
+    <div id="goals-empty-state" class="empty-state" style="display: none;">
+        <p>هیچ هدفی تعریف نشده است.</p>
+        <button class="btn-primary" onclick="openNewGoalModal()">ساخت اولین هدف</button>
+    </div>
+
+    <!-- لیست اهداف -->
+    <div id="goals-grid" class="goals-grid">
+        <!-- کارت‌های اهداف به صورت پویا اینجا لود می‌شوند -->
+    </div>
+</section>
