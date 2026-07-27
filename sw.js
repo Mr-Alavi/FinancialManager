@@ -1,10 +1,16 @@
+// sw.js
 const CACHE_NAME = 'tror-pfos-enterprise-v7.2';
 const ASSETS = [
   './index.html',
   './style.css',
   './app.js',
   './manifest.json',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css'
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
+  'features/settings/settings.html',
+  'features/settings/settings.css',
+  'features/settings/localization.js',
+  'features/goals/goals.html',
+  'features/goals/goals.js'
 ];
 
 self.addEventListener('install', (e) => {
