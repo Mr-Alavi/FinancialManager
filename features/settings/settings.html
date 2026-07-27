@@ -1,0 +1,43 @@
+<section id="settings-module" class="pfos-module-container">
+    <div class="module-header">
+        <h2 data-i18n="settings_title">سیستم تنظیمات پیشرفته</h2>
+        <p data-i18n="settings_subtitle">مدیریت ظاهر، زبان، ارز و پیکربندی عمومی سیستم</p>
+    </div>
+
+    <div class="glass-card settings-card">
+        <h3 data-i18n="general_settings">تنظیمات عمومی</h3>
+        
+        <div class="form-group">
+            <label for="setting-theme" data-i18n="label_theme">پوسته بصری (Theme)</label>
+            <select id="setting-theme">
+                <option value="dark">Luxury Dark</option>
+                <option value="light">Luxury Light</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="setting-lang" data-i18n="label_language">زبان سیستم (Language)</label>
+            <select id="setting-lang">
+                <option value="fa">فارسی</option>
+                <option value="en">English</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="setting-currency" data-i18n="label_currency">واحد پول پیش‌فرض (Currency)</label>
+            <select id="setting-currency">
+                <option value="تومان">تومان (Toman)</option>
+                <option value="ریال">ریال (Rial)</option>
+                <option value="Dollar">Dollar ($)</option>
+                <option value="Euro">Euro (€)</option>
+                <option value="USDT">USDT</option>
+            </select>
+        </div>
+
+        <div class="settings-actions">
+            <button id="save-settings-btn" class="glass-btn">
+                <i class="fas fa-save"></i> <span data-i18n="btn_save">ذخیره تغییرات</span>
+            </button>
+        </div>
+    </div>
+</section>
