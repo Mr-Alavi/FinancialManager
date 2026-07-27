@@ -1,9 +1,10 @@
 {
-  "name": "TROR",
+  "name": "مدیریت مالی | TROR",
   "short_name": "TROR",
-  "id": "/",
-  "start_url": "./index.html",
-  "scope": "./",
+  "description": "سیستم مدیریت مالی شخصی TROR",
+  "id": "/FinancialManager/",
+  "start_url": "/FinancialManager/",
+  "scope": "/FinancialManager/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#ffffff",
@@ -60,4 +61,4 @@
       "purpose": "any maskable"
     }
   ]
-}
+}ن
